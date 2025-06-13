@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.template
+package com.embabel
 
 import com.embabel.common.util.WinUtils
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -23,16 +23,16 @@ import org.springframework.boot.runApplication
 @SpringBootApplication(
     scanBasePackages = [
         "com.embabel.agent",
-        "com.embabel.template",
+        "com.embabel.decker",
     ]
 )
 @ConfigurationPropertiesScan(
     basePackages = [
         "com.embabel.agent",
-        "com.embabel.template",
+        "com.embabel.decker",
     ]
 )
-class ProjectNameApplication {
+class DeckerApplication {
 
     companion object {
         init {
@@ -46,5 +46,5 @@ class ProjectNameApplication {
 }
 
 fun main(args: Array<String>) {
-    runApplication<ProjectNameApplication>(*args)
+    runApplication<DeckerApplication>(*args)
 }
