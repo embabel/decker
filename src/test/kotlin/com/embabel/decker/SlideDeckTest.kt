@@ -17,12 +17,13 @@ package com.embabel.decker
 
 import io.mockk.every
 import io.mockk.mockk
+import org.codehaus.groovy.runtime.DefaultGroovyMethods.every
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNotEquals
-import kotlin.test.assertTrue
+import org.springframework.test.util.AssertionErrors.assertNotEquals
 
 val PARIS = """
             ---

@@ -9,8 +9,7 @@ if errorlevel 1 (
 )
 
 
-set SPRING_PROFILES_ACTIVE=shell,severance
 
-cmd /c mvn -P agent-examples-kotlin -Dmaven.test.skip=true spring-boot:run
+cmd /c mvn -Dmaven.test.skip=true spring-boot:run
 
 endlocal

@@ -27,7 +27,7 @@ import com.embabel.agent.domain.library.CompletedResearch
 import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchResult
 import com.embabel.agent.domain.library.ResearchTopics
-import com.embabel.agent.prompt.CoStar
+import com.embabel.agent.prompt.persona.CoStar
 import com.embabel.agent.tools.file.FileContentTransformer
 import com.embabel.agent.tools.file.FileReadTools
 import com.embabel.agent.tools.file.WellKnownFileContentTransformers.removeApacheLicenseHeader
@@ -119,8 +119,8 @@ class PresentationMaker(
         val researchReports = researchTopics.topics.parallelMap(context) {
             context.promptRunner(
                 llm = LlmOptions.fromModel(properties.researchLlm),
-                toolGroups = setOf(CoreToolGroups.WEB),
             )
+                .withToolGroup(CoreToolGroups.WEB)
                 .withToolObject(presentationRequest.project)
                 .withPromptContributor(presentationRequest)
                 .create<ResearchReport>(

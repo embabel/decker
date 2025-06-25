@@ -15,35 +15,24 @@
  */
 package com.embabel
 
-import com.embabel.common.util.WinUtils
+import com.embabel.agent.config.annotation.EnableAgentShell
+import com.embabel.agent.config.annotation.EnableAgents
+import com.embabel.agent.config.annotation.LocalModels
+import com.embabel.agent.config.annotation.LoggingThemes
+import com.embabel.agent.config.annotation.McpServers
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
-@SpringBootApplication(
-    scanBasePackages = [
-        "com.embabel.agent",
-        "com.embabel.decker",
-    ]
-)
-@ConfigurationPropertiesScan(
-    basePackages = [
-        "com.embabel.agent",
-        "com.embabel.decker",
-    ]
-)
-class DeckerApplication {
-
-    companion object {
-        init {
-            if (WinUtils.IS_OS_WINDOWS()) {
-                // Set console to UTF-8 on Windows
-                // This is necessary to display non-ASCII characters correctly
-                WinUtils.CHCP_TO_UTF8()
-            }
-        }
-    }
-}
+@SpringBootApplication
+@ConfigurationPropertiesScan
+@EnableAgents(
+    loggingTheme = LoggingThemes.SEVERANCE,
+    localModels = [LocalModels.DOCKER],
+    mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
+    )
+@EnableAgentShell
+class DeckerApplication
 
 fun main(args: Array<String>) {
     runApplication<DeckerApplication>(*args)

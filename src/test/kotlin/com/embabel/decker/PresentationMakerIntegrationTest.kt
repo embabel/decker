@@ -20,14 +20,14 @@ import com.embabel.agent.core.Agent
 import com.embabel.agent.core.AgentProcessStatusCode
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.domain.io.FileArtifact
-import com.embabel.agent.prompt.CoStar
-import com.embabel.agent.testing.IntegrationTestUtils.dummyAgentPlatform
+import com.embabel.agent.prompt.persona.CoStar
+import com.embabel.agent.testing.integration.IntegrationTestUtils.dummyAgentPlatform
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.core.env.Environment
-import kotlin.test.assertEquals
 
 class PresentationMakerIntegrationTest {
 
