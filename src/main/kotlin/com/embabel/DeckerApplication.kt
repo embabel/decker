@@ -26,12 +26,12 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
+@EnableAgentShell
 @EnableAgents(
     loggingTheme = LoggingThemes.SEVERANCE,
     localModels = [LocalModels.DOCKER],
     mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
     )
-@EnableAgentShell
 class DeckerApplication
 
 fun main(args: Array<String>) {
