@@ -28,12 +28,12 @@ import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchResult
 import com.embabel.agent.domain.library.ResearchTopics
 import com.embabel.agent.prompt.persona.CoStar
-import com.embabel.agent.tools.file.FileContentTransformer
 import com.embabel.agent.tools.file.FileReadTools
 import com.embabel.agent.tools.file.WellKnownFileContentTransformers.removeApacheLicenseHeader
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.common.ai.prompt.PromptContributor
+import com.embabel.common.util.StringTransformer
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -318,5 +318,5 @@ class PresentationMaker(
 
 class Project(override val root: String) : FileReadTools, SymbolSearch {
 
-    override val fileContentTransformers: List<FileContentTransformer> = listOf(removeApacheLicenseHeader)
+    override val fileContentTransformers: List<StringTransformer> = listOf(removeApacheLicenseHeader)
 }
