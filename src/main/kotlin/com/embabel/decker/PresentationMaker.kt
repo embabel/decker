@@ -15,7 +15,10 @@
  */
 package com.embabel.decker
 
-import com.embabel.agent.api.annotation.*
+import com.embabel.agent.api.annotation.AchievesGoal
+import com.embabel.agent.api.annotation.Action
+import com.embabel.agent.api.annotation.Agent
+import com.embabel.agent.api.annotation.RequireNameMatch
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.create
 import com.embabel.agent.api.dsl.parallelMap
@@ -28,12 +31,15 @@ import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchResult
 import com.embabel.agent.domain.library.ResearchTopics
 import com.embabel.agent.prompt.persona.CoStar
-import com.embabel.agent.tools.file.FileContentTransformer
+import com.embabel.agent.tools.file.DefaultFileReadLog
+import com.embabel.agent.tools.file.FileReadLog
 import com.embabel.agent.tools.file.FileReadTools
 import com.embabel.agent.tools.file.WellKnownFileContentTransformers.removeApacheLicenseHeader
+import com.embabel.common.ai.model.BuildableLlmOptions
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.common.ai.prompt.PromptContributor
+import com.embabel.common.util.StringTransformer
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -79,9 +85,16 @@ data class PresentationRequest(
 
 @ConfigurationProperties(prefix = "embabel.presentation-maker")
 data class PresentationMakerProperties(
-    val researchLlm: String = OpenAiModels.GPT_41_MINI,
-    val creationLlm: String = AnthropicModels.CLAUDE_37_SONNET,
-)
+    val researchModel: String = OpenAiModels.GPT_41_MINI,
+    val creationModel: String = AnthropicModels.CLAUDE_37_SONNET,
+) {
+
+    val researchLlm: BuildableLlmOptions =
+        LlmOptions(byName(researchModel))
+
+    val creationLlm: BuildableLlmOptions =
+        LlmOptions(byName(creationModel))
+}
 
 
 /**
@@ -97,18 +110,22 @@ class PresentationMaker(
     private val logger = LoggerFactory.getLogger(PresentationMaker::class.java)
 
     @Action
-    fun identifyResearchTopics(presentationRequest: PresentationRequest): ResearchTopics =
-        usingModel(
-            properties.creationLlm,
+    fun identifyResearchTopics(
+        presentationRequest: PresentationRequest,
+        context: OperationContext
+    ): ResearchTopics =
+        context.promptRunner().withLlm(
+            properties.creationLlm
+        )
 //            toolGroups = setOf(CoreToolGroups.WEB),
-        ).create(
-            """
+            .create(
+                """
                 Create a list of research topics for a presentation,
                 based on the given input:
                 ${presentationRequest.brief}
                 About the presenter: ${presentationRequest.presenterBio}
                 """.trimIndent()
-        )
+            )
 
     @Action
     fun researchTopics(
@@ -118,7 +135,7 @@ class PresentationMaker(
     ): ResearchResult {
         val researchReports = researchTopics.topics.parallelMap(context) {
             context.promptRunner(
-                llm = LlmOptions.fromModel(properties.researchLlm),
+                llm = properties.researchLlm,
             )
                 .withToolGroup(CoreToolGroups.WEB)
                 .withToolObject(presentationRequest.project)
@@ -153,7 +170,7 @@ class PresentationMaker(
         context: OperationContext,
     ): SlideDeck {
         val reports = researchComplete.topicResearches.map { it.researchReport }
-        val slideDeck = context.promptRunner(llm = LlmOptions(byName(properties.creationLlm)))
+        val slideDeck = context.promptRunner(llm = properties.creationLlm)
             .withPromptContributor(presentationRequest)
             .withToolGroup(CoreToolGroups.WEB)
             .withToolObject(presentationRequest.project)
@@ -247,7 +264,7 @@ class PresentationMaker(
             logger.info("Asking LLM to add illustrations to this resource")
 
             val illustrator = context.promptRunner(
-                llm = LlmOptions(byName(properties.researchLlm)).withTemperature(.3)
+                llm = properties.researchLlm.withTemperature(.3)
             ).withToolGroup(CoreToolGroups.WEB)
             val newSlides = withDiagrams.slides().map { slide ->
                 val newContent = illustrator.generateText(
@@ -316,7 +333,8 @@ class PresentationMaker(
 
 }
 
-class Project(override val root: String) : FileReadTools, SymbolSearch {
+class Project(override val root: String) : FileReadTools, SymbolSearch,
+    FileReadLog by DefaultFileReadLog() {
 
-    override val fileContentTransformers: List<FileContentTransformer> = listOf(removeApacheLicenseHeader)
+    override val fileContentTransformers: List<StringTransformer> = listOf(removeApacheLicenseHeader)
 }
