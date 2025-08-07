@@ -15,11 +15,7 @@
  */
 package com.embabel
 
-import com.embabel.agent.config.annotation.EnableAgentShell
-import com.embabel.agent.config.annotation.EnableAgents
-import com.embabel.agent.config.annotation.LocalModels
-import com.embabel.agent.config.annotation.LoggingThemes
-import com.embabel.agent.config.annotation.McpServers
+import com.embabel.agent.config.annotation.*
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
@@ -31,7 +27,7 @@ import org.springframework.boot.runApplication
     loggingTheme = LoggingThemes.SEVERANCE,
     localModels = [LocalModels.DOCKER],
     mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
-    )
+)
 class DeckerApplication
 
 fun main(args: Array<String>) {

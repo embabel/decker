@@ -315,6 +315,7 @@ class PresentationMaker(
 
     @AchievesGoal(
         description = "Create a presentation based on research reports",
+        export = Export(remote = true),
     )
     @Action
     fun convertToSlides(
