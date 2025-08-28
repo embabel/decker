@@ -15,10 +15,7 @@
  */
 package com.embabel.decker
 
-import com.embabel.agent.api.annotation.AchievesGoal
-import com.embabel.agent.api.annotation.Action
-import com.embabel.agent.api.annotation.Agent
-import com.embabel.agent.api.annotation.RequireNameMatch
+import com.embabel.agent.api.annotation.*
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.create
 import com.embabel.agent.api.dsl.parallelMap
@@ -26,16 +23,13 @@ import com.embabel.agent.config.models.AnthropicModels
 import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.domain.io.FileArtifact
-import com.embabel.agent.domain.library.CompletedResearch
 import com.embabel.agent.domain.library.ResearchReport
-import com.embabel.agent.domain.library.ResearchResult
 import com.embabel.agent.domain.library.ResearchTopics
 import com.embabel.agent.prompt.persona.CoStar
 import com.embabel.agent.tools.file.DefaultFileReadLog
 import com.embabel.agent.tools.file.FileReadLog
 import com.embabel.agent.tools.file.FileReadTools
 import com.embabel.agent.tools.file.WellKnownFileContentTransformers.removeApacheLicenseHeader
-import com.embabel.common.ai.model.BuildableLlmOptions
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.common.ai.prompt.PromptContributor
@@ -45,6 +39,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 data class ImageInfo(val url: String, val useWhen: String)
+
+data class ResearchResult(
+    val topicReports: List<ResearchReport>,
+)
 
 /**
  * @param brief the content of the presentation. Can be short
@@ -89,10 +87,10 @@ data class PresentationMakerProperties(
     val creationModel: String = AnthropicModels.CLAUDE_37_SONNET,
 ) {
 
-    val researchLlm: BuildableLlmOptions =
+    val researchLlm =
         LlmOptions(byName(researchModel))
 
-    val creationLlm: BuildableLlmOptions =
+    val creationLlm =
         LlmOptions(byName(creationModel))
 }
 
@@ -114,9 +112,8 @@ class PresentationMaker(
         presentationRequest: PresentationRequest,
         context: OperationContext
     ): ResearchTopics =
-        context.promptRunner().withLlm(
-            properties.creationLlm
-        )
+        context.ai()
+            .withLlm(properties.creationLlm)
 //            toolGroups = setOf(CoreToolGroups.WEB),
             .create(
                 """
@@ -133,10 +130,9 @@ class PresentationMaker(
         presentationRequest: PresentationRequest,
         context: OperationContext,
     ): ResearchResult {
-        val researchReports = researchTopics.topics.parallelMap(context) {
-            context.promptRunner(
-                llm = properties.researchLlm,
-            )
+        val topicReports = researchTopics.topics.parallelMap(context) {
+            context.ai()
+                .withLlm(llm = properties.researchLlm)
                 .withToolGroup(CoreToolGroups.WEB)
                 .withToolObject(presentationRequest.project)
                 .withPromptContributor(presentationRequest)
@@ -154,12 +150,7 @@ class PresentationMaker(
                 )
         }
         return ResearchResult(
-            topicResearches = researchTopics.topics.mapIndexed { index, topic ->
-                CompletedResearch(
-                    topic = topic,
-                    researchReport = researchReports[index],
-                )
-            }
+            topicReports = topicReports
         )
     }
 
@@ -169,7 +160,6 @@ class PresentationMaker(
         researchComplete: ResearchResult,
         context: OperationContext,
     ): SlideDeck {
-        val reports = researchComplete.topicResearches.map { it.researchReport }
         val slideDeck = context.promptRunner(llm = properties.creationLlm)
             .withPromptContributor(presentationRequest)
             .withToolGroup(CoreToolGroups.WEB)
@@ -186,7 +176,7 @@ class PresentationMaker(
                 ${presentationRequest.brief}
 
                 Support your points using the following research:
-                $reports
+                ${researchComplete.topicReports}
 
                 The presentation should be ${presentationRequest.slideCount} slides long.
                 It should have a compelling narrative and call to action.

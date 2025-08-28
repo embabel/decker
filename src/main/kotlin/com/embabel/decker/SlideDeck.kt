@@ -159,4 +159,7 @@ $slideContents
         return SlideDeck(result)
     }
 
+    override fun contribution(): String {
+        return deck
+    }
 }

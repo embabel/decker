@@ -7,12 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ProjectName" />
+        <module name="Decker" />
         <module name="embabel-coding-agent" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Decker" options="-parameters" />
       <module name="ProjectName" options="-parameters" />
     </option>
   </component>
