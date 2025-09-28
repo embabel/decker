@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel
+package com.embabel.decker
 
-import com.embabel.agent.config.annotation.*
+import com.embabel.agent.config.annotation.EnableAgents
+import com.embabel.agent.config.annotation.LoggingThemes
+import com.embabel.agent.config.annotation.McpServers
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-@EnableAgentShell
 @EnableAgents(
     loggingTheme = LoggingThemes.SEVERANCE,
-    localModels = [LocalModels.DOCKER],
-    mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
+    mcpServers = [McpServers.DOCKER_DESKTOP],
 )
 class DeckerApplication
 
