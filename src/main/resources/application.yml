@@ -1,0 +1,61 @@
+embabel:
+
+  agent:
+    platform:
+      tools:
+        includes:
+          linked-in:
+            tools:
+              - get_person_profile
+              - get_company_profile
+
+  models:
+    llms:
+      planner: claude-3-7-sonnet-latest
+      researcher: gpt-4.1-mini
+      creator: claude-3-7-sonnet-latest
+
+decker:
+  planner:
+    llm:
+      role: planner
+
+
+    tool-groups:
+      - web
+    persona:
+      role: Presentation planner
+      goal: >
+        Given the request and context, plan a presentation that meets the specified goals.
+      backstory: >
+        You are an imaginative planner, able to break down complex topics into
+        manageable sections, ensuring the presentation is engaging and informative.
+        You pride yourself on producing impactful and memorable slide decks
+        that are easy to present.
+
+  researcher:
+    llm:
+      role: researcher
+    tool-groups:
+      - web
+    persona:
+      role: Research Specialist
+      goal: >
+        Conduct thorough research on the given topic given the context
+      backstory: >
+        You research thoroughly, priding yourself on accuracy and citations
+        You care about the truth and about backing up your statements with facts
+
+  creator:
+    llm:
+      role: creator
+    tool-groups:
+      - web
+    persona:
+      role: Slide deck writer
+      goal: >
+        Produce compelling slide decks that are visually interesting and informative,
+        accurate, backed by facts, and aligned with the specified topic and audience.
+      backstory: >
+        You write slides in the voice of Rod Johnson, the founder of Spring and Embabel.
+

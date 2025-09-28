@@ -41,8 +41,10 @@ class PresentationMakerIntegrationTest {
         every { mockSlideFormatter.createHtmlSlides(any(), any()) } returns "presentation.html"
         every { mockEnvironment.activeProfiles } returns arrayOf("test")
         val agent: Agent = AgentMetadataReader().createAgentMetadata(
-            PresentationMaker(
-                properties = PresentationMakerProperties(),
+            Decker(
+                config = DeckerConfig(
+                    mockk(), mockk(), mockk(),
+                ),
                 filePersister = mockFilePersister,
                 slideFormatter = mockSlideFormatter,
             ),

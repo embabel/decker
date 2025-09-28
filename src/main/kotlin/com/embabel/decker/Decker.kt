@@ -16,27 +16,22 @@
 package com.embabel.decker
 
 import com.embabel.agent.api.annotation.*
+import com.embabel.agent.api.common.Ai
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.create
 import com.embabel.agent.api.dsl.parallelMap
-import com.embabel.agent.config.models.AnthropicModels
-import com.embabel.agent.config.models.OpenAiModels
-import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.domain.io.FileArtifact
 import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchTopics
+import com.embabel.agent.prompt.persona.Actor
 import com.embabel.agent.prompt.persona.CoStar
-import com.embabel.agent.tools.file.DefaultFileReadLog
-import com.embabel.agent.tools.file.FileReadLog
-import com.embabel.agent.tools.file.FileReadTools
-import com.embabel.agent.tools.file.WellKnownFileContentTransformers.removeApacheLicenseHeader
-import com.embabel.common.ai.model.LlmOptions
-import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
+import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.prompt.PromptContributor
-import com.embabel.common.util.StringTransformer
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.NestedConfigurationProperty
+import org.springframework.validation.annotation.Validated
 
 data class ImageInfo(val url: String, val useWhen: String)
 
@@ -81,40 +76,37 @@ data class PresentationRequest(
     }
 }
 
-@ConfigurationProperties(prefix = "embabel.presentation-maker")
-data class PresentationMakerProperties(
-    val researchModel: String = OpenAiModels.GPT_41_MINI,
-    val creationModel: String = AnthropicModels.CLAUDE_37_SONNET,
-) {
-
-    val researchLlm =
-        LlmOptions(byName(researchModel))
-
-    val creationLlm =
-        LlmOptions(byName(creationModel))
-}
+@Validated
+@ConfigurationProperties(prefix = "decker")
+data class DeckerConfig(
+    @NestedConfigurationProperty val planner: Actor<RoleGoalBackstory>,
+    @NestedConfigurationProperty val researcher: Actor<RoleGoalBackstory>,
+    @NestedConfigurationProperty val creator: Actor<RoleGoalBackstory>,
+)
 
 
 /**
- * Naming agent that generates names for a company or project.
+ * Agent that generates slide decks.
  */
 @Agent(description = "Presentation maker. Build a presentation on a topic")
-class PresentationMaker(
+class Decker(
     private val slideFormatter: SlideFormatter,
     private val filePersister: FilePersister,
-    private val properties: PresentationMakerProperties,
+    private val config: DeckerConfig,
 ) {
 
-    private val logger = LoggerFactory.getLogger(PresentationMaker::class.java)
+    private val logger = LoggerFactory.getLogger(Decker::class.java)
+
+    init {
+        logger.info("Decker initialized with config: {}", config)
+    }
 
     @Action
     fun identifyResearchTopics(
         presentationRequest: PresentationRequest,
-        context: OperationContext
+        ai: Ai
     ): ResearchTopics =
-        context.ai()
-            .withLlm(properties.creationLlm)
-//            toolGroups = setOf(CoreToolGroups.WEB),
+        config.creator.promptRunner(ai)
             .create(
                 """
                 Create a list of research topics for a presentation,
@@ -131,9 +123,7 @@ class PresentationMaker(
         context: OperationContext,
     ): ResearchResult {
         val topicReports = researchTopics.topics.parallelMap(context) {
-            context.ai()
-                .withLlm(llm = properties.researchLlm)
-                .withToolGroup(CoreToolGroups.WEB)
+            config.researcher.promptRunner(context)
                 .withToolObject(presentationRequest.project)
                 .withPromptContributor(presentationRequest)
                 .create<ResearchReport>(
@@ -158,11 +148,10 @@ class PresentationMaker(
     fun createDeck(
         presentationRequest: PresentationRequest,
         researchComplete: ResearchResult,
-        context: OperationContext,
+        ai: Ai,
     ): SlideDeck {
-        val slideDeck = context.promptRunner(llm = properties.creationLlm)
+        val slideDeck = config.creator.promptRunner(ai)
             .withPromptContributor(presentationRequest)
-            .withToolGroup(CoreToolGroups.WEB)
             .withToolObject(presentationRequest.project)
             .create<SlideDeck>(
                 """
@@ -253,9 +242,9 @@ class PresentationMaker(
         } else {
             logger.info("Asking LLM to add illustrations to this resource")
 
-            val illustrator = context.promptRunner(
-                llm = properties.researchLlm.withTemperature(.3)
-            ).withToolGroup(CoreToolGroups.WEB)
+            val illustrator = context.ai().withLlm(
+                config.researcher.llm.withTemperature(.3)
+            )
             val newSlides = withDiagrams.slides().map { slide ->
                 val newContent = illustrator.generateText(
                     """
@@ -322,10 +311,4 @@ class PresentationMaker(
         )
     }
 
-}
-
-class Project(override val root: String) : FileReadTools, SymbolSearch,
-    FileReadLog by DefaultFileReadLog() {
-
-    override val fileContentTransformers: List<StringTransformer> = listOf(removeApacheLicenseHeader)
 }

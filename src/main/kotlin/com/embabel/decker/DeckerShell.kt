@@ -15,12 +15,11 @@
  */
 package com.embabel.decker
 
-import com.embabel.agent.api.common.autonomy.AgentProcessExecution
+import com.embabel.agent.api.common.autonomy.AgentInvocation
 import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
-import com.embabel.agent.event.logging.personality.severance.LumonColorPalette
-import com.embabel.agent.shell.formatProcessOutput
+import com.embabel.agent.domain.io.FileArtifact
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -31,15 +30,15 @@ import org.springframework.shell.standard.ShellOption
 import java.nio.charset.Charset
 
 @ShellComponent("Presentation maker commands")
-class PresentationMakerShell(
+class DeckerShell(
     private val agentPlatform: AgentPlatform,
     private val resourceLoader: ResourceLoader,
     private val objectMapper: ObjectMapper,
 ) {
-    @ShellMethod
-    fun makePresentation(
+    @ShellMethod("Create a slide deck from a YAML description")
+    fun deck(
         @ShellOption(
-            defaultValue = "file:/Users/rjohnson/dev/embabel.com/embabel-agent/embabel-agent-api/src/main/kotlin/com/embabel/examples/dogfood/presentation/kotlinconf_presentation.yml",
+            defaultValue = "file:/Users/rjohnson/dev/embabel.com/decker/inputs/kotlinconf_presentation.yml",
         )
         file: String,
     ): String {
@@ -50,20 +49,11 @@ class PresentationMakerShell(
             PresentationRequest::class.java,
         )
 
-        val agentProcess = agentPlatform.runAgentWithInput(
-            agent = agentPlatform.agents().single { it.name == "PresentationMaker" },
-            input = presentationRequest,
-            processOptions = ProcessOptions(verbosity = Verbosity(showPrompts = true)),
-        )
+        val fileArtifact = AgentInvocation.builder(agentPlatform)
+            .options(ProcessOptions(verbosity = Verbosity(showPrompts = true)))
+            .build(FileArtifact::class.java)
+            .invoke(presentationRequest)
 
-        return formatProcessOutput(
-            result = AgentProcessExecution.Companion.fromProcessStatus(
-                basis = presentationRequest,
-                agentProcess = agentProcess
-            ),
-            colorPalette = LumonColorPalette,
-            objectMapper = objectMapper,
-            lineLength = 140,
-        ) + "\ndeck is at ${presentationRequest.outputDirectory}/${presentationRequest.outputFile}"
+        return "Deck created at ${fileArtifact.file.absolutePath}"
     }
 }
