@@ -47,6 +47,7 @@ data class DeckerConfig(
     @NestedConfigurationProperty val creator: Actor<RoleGoalBackstory>,
     override val similarityThreshold: ZeroToOne = .6,
     override val topK: Int = 8,
+    val concurrencyLevel: Int = 10,
 ) : SimilarityCutoff {
 
     fun ragOptions(): RagOptions {
@@ -98,7 +99,10 @@ class Decker(
         presentationRequest: PresentationRequest,
         context: OperationContext,
     ): ResearchResult {
-        val topicReports = researchTopics.topics.parallelMap(context) {
+        val topicReports = researchTopics.topics.parallelMap(
+            context = context,
+            concurrencyLevel = config.concurrencyLevel
+        ) {
             config.researcher.promptRunner(context)
                 // TODO this should be changed to RAG as a reference
                 .withRag(config.ragOptions())

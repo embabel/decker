@@ -85,6 +85,8 @@ images:
 
 outputFile: goto.md
 
+autoIllustrate: true
+
 references:
   - type: github
     url: https://github.com/embabel/embabel-agent

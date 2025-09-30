@@ -2,6 +2,8 @@ package com.embabel.decker.shell
 
 import com.embabel.agent.api.common.autonomy.AgentInvocation
 import com.embabel.agent.core.AgentPlatform
+import com.embabel.agent.core.Budget
+import com.embabel.agent.core.Budget.Companion.DEFAULT_TOKEN_LIMIT
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.domain.io.FileArtifact
@@ -46,8 +48,13 @@ class DeckerShell(
             PresentationRequest::class.java,
         )
 
-        val fileArtifact = AgentInvocation.Companion.builder(agentPlatform)
-            .options(ProcessOptions(verbosity = Verbosity(showPrompts = true)))
+        val fileArtifact = AgentInvocation.builder(agentPlatform)
+            .options(
+                ProcessOptions(
+                    verbosity = Verbosity(showPrompts = true),
+                    budget = Budget(cost = 10.0, tokens = DEFAULT_TOKEN_LIMIT * 10),
+                )
+            )
             .build(FileArtifact::class.java)
             .invoke(presentationRequest)
 

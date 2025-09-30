@@ -56,6 +56,7 @@ decker:
 
   top-k: 10
   similarity-threshold: 0.6
+  concurrency-level: 10
 
 spring:
 

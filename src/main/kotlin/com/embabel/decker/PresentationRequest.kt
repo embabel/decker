@@ -3,6 +3,7 @@ package com.embabel.decker
 import com.embabel.agent.api.common.LlmReference
 import com.embabel.agent.prompt.persona.CoStar
 import com.embabel.common.ai.prompt.PromptContributor
+import kotlin.io.path.Path
 
 /**
  * @param brief the content of the presentation. Can be short
@@ -14,7 +15,6 @@ data class PresentationRequest(
     val presenterBio: String,
     val brief: String,
     private val references: List<ReferenceSpec>,
-    val outputDirectory: String = "/Users/rjohnson/Documents",
     val outputFile: String = "presentation.md",
     val header: String,
     val images: Map<String, ImageInfo> = emptyMap(),
@@ -23,8 +23,10 @@ data class PresentationRequest(
     val coStar: CoStar,
 ) : PromptContributor by coStar {
 
-    val llmReferences: List<LlmReference> = emptyList()
-//        references.map { it.reference() }
+    val outputDirectory: String = Path(System.getProperty("user.dir"), "output").toString()
+
+    val llmReferences: List<LlmReference> =
+        references.map { it.reference() }
 
     /**
      * File name for interim artifact with raw deck
