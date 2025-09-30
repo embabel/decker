@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.validation.annotation.Validated
+import kotlin.io.path.Path
 
 data class ResearchResult(
     val topicReports: List<ResearchReport>,
@@ -133,9 +134,9 @@ class Decker(
     fun createDeck(
         presentationRequest: PresentationRequest,
         researchComplete: ResearchResult,
-        ai: Ai,
+        context: OperationContext,
     ): SlideDeck {
-        val slideDeck = config.creator.promptRunner(ai)
+        val slideDeck = config.creator.promptRunner(context)
             .withPromptContributor(presentationRequest)
             .withReferences(presentationRequest.llmReferences)
             // TODO this should be changed to RAG as a reference
@@ -149,7 +150,7 @@ class Decker(
                 )
             )
         filePersister.saveFile(
-            directory = presentationRequest.outputDirectory,
+            directory = context.outputDirectory,
             fileName = presentationRequest.rawOutputFile(),
             content = slideDeck.deck,
         )
@@ -163,13 +164,14 @@ class Decker(
     fun expandDigraphs(
         slideDeck: SlideDeck,
         presentationRequest: PresentationRequest,
+        context: OperationContext,
     ): SlideDeck {
         val diagramExpander = DotCliDigraphExpander(
-            directory = presentationRequest.outputDirectory,
+            directory = context.outputDirectory,
         )
         val withDigraphs = slideDeck.expandDigraphs(diagramExpander)
         filePersister.saveFile(
-            directory = presentationRequest.outputDirectory,
+            directory = context.outputDirectory,
             fileName = presentationRequest.withDiagramsOutputFile(),
             content = withDigraphs.deck,
         )
@@ -179,9 +181,10 @@ class Decker(
     @Action(outputBinding = "withDiagrams")
     fun loadWithDigraphs(
         presentationRequest: PresentationRequest,
+        context: OperationContext,
     ): SlideDeck? {
         return filePersister.loadFile(
-            directory = presentationRequest.outputDirectory,
+            directory = context.outputDirectory,
             fileName = presentationRequest.withDiagramsOutputFile(),
         )?.let {
             SlideDeck(it)
@@ -246,11 +249,11 @@ class Decker(
 
         logger.info(
             "Saving final MARP markdown to {}/{}",
-            presentationRequest.outputDirectory,
+            context.outputDirectory,
             presentationRequest.outputFile,
         )
         filePersister.saveFile(
-            directory = presentationRequest.outputDirectory,
+            directory = context.outputDirectory,
             fileName = presentationRequest.outputFile,
             content = deckWithIllustrations.deck,
         )
@@ -265,15 +268,24 @@ class Decker(
     fun convertToSlides(
         presentationRequest: PresentationRequest,
         @RequireNameMatch withIllustrations: SlideDeck,
+        context: OperationContext,
     ): FileArtifact {
         val htmlFile = slideFormatter.createHtmlSlides(
-            directory = presentationRequest.outputDirectory,
+            directory = context.outputDirectory,
             markdownFilename = presentationRequest.outputFile,
         )
         return FileArtifact(
-            directory = presentationRequest.outputDirectory,
+            directory = context.outputDirectory,
             outputFile = htmlFile,
         )
     }
 
 }
+
+private val OperationContext.outputDirectory: String
+    get() = Path(
+        System.getProperty("user.dir"),
+        "output",
+        agentProcess.id
+    ).toString()
+

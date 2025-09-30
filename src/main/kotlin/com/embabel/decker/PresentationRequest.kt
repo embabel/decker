@@ -3,7 +3,6 @@ package com.embabel.decker
 import com.embabel.agent.api.common.LlmReference
 import com.embabel.agent.prompt.persona.CoStar
 import com.embabel.common.ai.prompt.PromptContributor
-import kotlin.io.path.Path
 
 /**
  * @param brief the content of the presentation. Can be short
@@ -23,8 +22,6 @@ data class PresentationRequest(
     //val slidesToInclude: String,
     val coStar: CoStar,
 ) : PromptContributor by coStar {
-
-    val outputDirectory: String = Path(System.getProperty("user.dir"), "output").toString()
 
     val llmReferences: List<LlmReference> =
         references.map { it.reference() }
