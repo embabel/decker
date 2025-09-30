@@ -75,9 +75,9 @@ images:
   kotlin:
     useWhen: background of first slide mentioning kotlin
     url: https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kotlin_Icon.svg/1024px-Kotlin_Icon.svg.png?20171012085709
-    java:
-      - useWhen: x
-        url: https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg
+  java:
+    useWhen: x
+    url: https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg
   spring-ai:
     useWhen: first slide mentioning Spring AI
     url: https://raw.githubusercontent.com/spring-io/spring-io-static/refs/heads/main/blog/tzolov/20250520/spring-ai-logo.png
@@ -107,7 +107,7 @@ references:
   - type: api
     name: embabel-aent
     description: Embabel Agent API
-    accepted-packages:
+    acceptedPackages:
       - com.embabel.agent
       - com.embabel.common
 

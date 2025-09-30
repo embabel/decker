@@ -133,45 +133,13 @@ class Decker(
             .withReferences(presentationRequest.llmReferences)
             // TODO this should be changed to RAG as a reference
             .withRag(config.ragOptions())
-            .create<SlideDeck>(
-                """
-                Create content for an impactful slide deck based on the given research.
-                Use the following input to guide the presentation:
-
-                # About the presenter
-                ${presentationRequest.presenterBio}
-
-                # Presentation narrative
-                ${presentationRequest.brief}
-
-                Support your points using the following research:
-                ${researchComplete.topicReports}
-
-                The presentation should be ${presentationRequest.slideCount} slides long.
-                It should have a compelling narrative and call to action.
-                It should end with a list of reference links.
-                Use the findPatternInProject tool and other file tools to find relevant content within the given software project
-                if required and format code on slides.
-
-                Use Marp format, creating Markdown that can be rendered as slides.
-                If you need to look it up, see https://github.com/marp-team/marp/blob/main/website/docs/guide/directives.md
-
-                If you include GraphViz dot diagrams, do NOT enclose them in ```
-                DO start with dot e.g. "dot digraph..."
-
-                Use the following images as suggested:
-                ${
-                    presentationRequest.images.map { "${it.key}: ${it.value.url} - use when: ${it.value.useWhen}" }
-                        .joinToString("\n")
-                }
-
-                Use the following header elements to start the deck.
-                Add further header elements if you wish.
-
-                ```
-                ${presentationRequest.header}
-                ```
-            """.trimIndent()
+            .withTemplate("create_deck")
+            .createObject(
+                SlideDeck::class.java,
+                mapOf(
+                    "presentationRequest" to presentationRequest,
+                    "topicReports" to researchComplete.topicReports,
+                )
             )
         filePersister.saveFile(
             directory = presentationRequest.outputDirectory,
