@@ -1,14 +1,18 @@
-slideCount: 28
+slideCount: 30
 presenterBio: >
   Rod Johnson, Embabel. Creator of Spring and Embabel
 
 brief: >
+  
+  General notes:
+  - NEVER make up any code. Look in the given projects
 
   Ideas for the flow:
 
   Gen AI is amazing. show cool examples for personal use, 
   personal assistant use case
   Show failure statistics on agent projects in business, recent MIT gartner etc and with quotes
+  
   Diagnose causes for this: 
   - Technology is nondeterministic, it's slow and expensive to run, 
   - things change all the time, 
@@ -16,14 +20,18 @@ brief: >
   - it's not integrated with bsuiness, it's coming out of a diffferent team, Python frameworks aren't aligned with business, 
   - it's excessively vendor driven, vendors selling snake oil
 
-  How do we fix this? Firstly we attack the nondeterminism and make agents as predictable as possible. Second we seek ways to integrate with what already works and not imagine we can reinvent the world
+  How do we fix this? Firstly we attack the nondeterminism and make agents as predictable as possible. 
+  Second we seek ways to integrate with what already works and not imagine we can reinvent the world
 
   What is the role of Java developers?
 
   We could imitate the Python world and copy their approaches. 
-  That approach is doomed to failure and if that's the best we can do (a) I'm very worried about the future and (b) go learn Python (you should know it anyway).
+  That approach is doomed to failure and if that's the best we can do 
+  (a) I'm very worried about the future and 
+  (b) go learn Python (you should know it anyway).
 
-  Or we could do more than play catchup. We could bring our assets to a far superior approach
+  Or we could do more than play catchup. 
+  We could bring our assets to a far superior approach
 
   The future of Gen AI for business is substantially on the JVM.
 

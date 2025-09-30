@@ -1,11 +1,7 @@
 package com.embabel.decker.shell
 
-import com.embabel.agent.api.common.autonomy.AgentInvocation
-import com.embabel.agent.core.AgentPlatform
-import com.embabel.agent.core.Budget
+import com.embabel.agent.core.*
 import com.embabel.agent.core.Budget.Companion.DEFAULT_TOKEN_LIMIT
-import com.embabel.agent.core.ProcessOptions
-import com.embabel.agent.core.Verbosity
 import com.embabel.agent.domain.io.FileArtifact
 import com.embabel.decker.PresentationRequest
 import com.embabel.decker.data.DataManager
@@ -24,6 +20,7 @@ class DeckerShell(
     private val agentPlatform: AgentPlatform,
     private val resourceLoader: ResourceLoader,
     private val dataManager: DataManager,
+    platform: AgentPlatform,
 ) {
 
     @ShellMethod("load docs from data/docs")
@@ -48,16 +45,18 @@ class DeckerShell(
             PresentationRequest::class.java,
         )
 
-        val fileArtifact = AgentInvocation.builder(agentPlatform)
-            .options(
-                ProcessOptions(
-                    verbosity = Verbosity(showPrompts = true),
-                    budget = Budget(cost = 10.0, tokens = DEFAULT_TOKEN_LIMIT * 10),
-                )
-            )
-            .build(FileArtifact::class.java)
-            .invoke(presentationRequest)
+        val agentProcess = agentPlatform.createAgentProcess(
+            agentPlatform.agents().find { it.name == "Decker" } ?: error("No Decker agent"),
+            ProcessOptions(
+                verbosity = Verbosity(showPrompts = true),
+                budget = Budget(cost = 10.0, tokens = DEFAULT_TOKEN_LIMIT * 10),
+            ),
+            mapOf("it" to presentationRequest),
+        ).run()
 
+        val fileArtifact = agentProcess.last<FileArtifact>() ?: error("No file artifact produced")
+
+        println("Cost: $${agentProcess.cost()}")
         return "Deck created at ${fileArtifact.file.absolutePath}"
     }
 }

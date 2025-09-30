@@ -118,7 +118,8 @@ class Decker(
             ${presentationRequest.researchReportMaxWords} words (excluding links).
             Use web tools to research and the find tools to look
             within the given references.
-            Always look for code examples in the project before using the web.
+            Always look for code examples in the available repos before using the web.
+            
             Topic: ${it.topic}
             Questions:
             ${it.questions.joinToString("\n")}
@@ -212,29 +213,14 @@ class Decker(
                 items = withDiagrams.slides(),
                 maxConcurrency = config.concurrencyLevel
             ) { slide ->
-                val newContent = illustrator.generateText(
-                    """
-                Take the following slide in MARP format.
-                The content is inside <slide> tags.
-                Overall objective: ${presentationRequest.brief}
-
-                If the slide contains an important point, try to add an image to it
-                DO NOT DO THIS FOR EVERY SLIDE--only where it may make an impact
-                Check that the image is available.
-                Format it so that you don't make the image too big.
-                Put the image on the right.
-                Make no other changes.
-                Do not perform any web research besides seeking images.
-                Return nothing but the amended slide content (the content between <slide></slide>).
-                Do not include <slide> tags
-                Do not ask any questions.
-                If you don't think an image is needed, return the slide unchanged.
-
-                <slide>
-                ${slide.content}
-                </slide>
-            """.trimIndent()
-                )
+                val newContent = illustrator
+                    .withTemplate("illustrate_slide")
+                    .generateText(
+                        mapOf(
+                            "presentationRequest" to presentationRequest,
+                            "slideContent" to slide.content,
+                        )
+                    )
                 Slide(
                     number = slide.number,
                     content = newContent,
