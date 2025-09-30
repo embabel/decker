@@ -111,7 +111,8 @@ class Decker(
                 .create<ResearchReport>(
                     """
             Given the following topic and the goal to create a presentation
-            for this audience, create a research report.
+            for this audience, create a research report with content of no more than
+            ${presentationRequest.researchReportMaxWords} words (excluding links).
             Use web tools to research and the find tools to look
             within the given references.
             Always look for code examples in the project before using the web.

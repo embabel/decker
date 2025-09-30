@@ -15,6 +15,7 @@ data class PresentationRequest(
     val presenterBio: String,
     val brief: String,
     private val references: List<ReferenceSpec>,
+    val researchReportMaxWords: Int = 150,
     val outputFile: String = "presentation.md",
     val header: String,
     val images: Map<String, ImageInfo> = emptyMap(),
