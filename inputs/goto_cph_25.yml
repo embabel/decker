@@ -6,9 +6,15 @@ brief: >
 
   Ideas for the flow:
 
-  Gen AI is amazing. show cool examples for personal use, personal assistant use case
-  Show failure statistics, recent MIT gartner etc and with quotes
-  Diagnose causes for this: Technology is nondeterministic, it's slow and expensive to run, things change all the time, best practice is emerging: ALSO it's not integrated with bsuiness, it's coming out of a diffferent team, Python frameworks aren't aligned with business, it's excessively vendor driven, vendors selling miraclesy
+  Gen AI is amazing. show cool examples for personal use, 
+  personal assistant use case
+  Show failure statistics on agent projects in busiess, recent MIT gartner etc and with quotes
+  Diagnose causes for this: 
+  - Technology is nondeterministic, it's slow and expensive to run, 
+  - things change all the time, 
+  - best practice is emerging: 
+  - it's not integrated with bsuiness, it's coming out of a diffferent team, Python frameworks aren't aligned with business, 
+  - it's excessively vendor driven, vendors selling snake oil
 
   How do we fix this? Firstly we attack the nondeterminism and make agents as predictable as possible. Second we seek ways to integrate with what already works and not imagine we can reinvent the world
 
@@ -34,15 +40,20 @@ brief: >
   taking back control from vendors and demonstrating what works
   
   As an example of Embabel's power, this slide deck was built by Embabel.
-  The Decker agent illustrates the core ideas. Pull example of how
-  Agents and Goals and AchievesGoal work.
+  The Decker agent illustrates the core ideas. Show example of how
+  Agents and Goals and AchievesGoal work from this project.
   
   Conclusion:
 
   You could go with vendor snake oil or start from scratch 
   with an unimaginative python framework. Massive risk. 
-  Or try Embabel, the best agent framework everywhere. 
-  Put a little Gen AI into your apps today and then grow towards the full potential of unlocking your business value
+  Or try Embabel, the best agent framework anywhere. 
+  
+  CTA:
+  Put a little Gen AI into your apps today and then grow towards 
+  the full potential of unlocking your business value
+  
+  Use the Embabel java-agent-template to get started
 
 header: |
   ---
@@ -82,11 +93,17 @@ references:
     url: https://github.com/embabel/embabel-agent-examples
     description: Embabel Agent Framework examples repository
   - type: github
+    url: https://github.com/embabel/java-agent-template
+    description: Embabel Java agent template which you can create your own projects from
+  - type: github
     url: https://github.com/embabel/decker
     description: The implementation of the presentation builder used to create this slide deck
   - type: webpage
     url: https://gotocph.com/2025/sessions/3893/gen-ai-grows-up-building-production-ready-agents-on-the-jvm
     description: GOTO Copenhagen 2025 session details
+  - type: webpage
+    url: https://medium.com/@springrod
+    description: Rod Johnson medium blog, read the individual blogs
 
 coStar:
   context: talk at Goto Copenhagen 2025

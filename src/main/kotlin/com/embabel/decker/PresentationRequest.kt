@@ -13,7 +13,7 @@ data class PresentationRequest(
     val slideCount: Int,
     val presenterBio: String,
     val brief: String,
-    val references: List<ReferenceSpec>,
+    private val references: List<ReferenceSpec>,
     val outputDirectory: String = "/Users/rjohnson/Documents",
     val outputFile: String = "presentation.md",
     val header: String,
@@ -23,9 +23,8 @@ data class PresentationRequest(
     val coStar: CoStar,
 ) : PromptContributor by coStar {
 
-    fun references(): List<LlmReference> =
-        references.map { it.reference() }
-
+    val llmReferences: List<LlmReference> = emptyList()
+//        references.map { it.reference() }
 
     /**
      * File name for interim artifact with raw deck

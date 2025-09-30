@@ -1,13 +1,13 @@
 embabel:
 
-  agent:
-    platform:
-      tools:
-        includes:
-          linked-in:
-            tools:
-              - get_person_profile
-              - get_company_profile
+  #  agent:
+  #    platform:
+  #      tools:
+  #        includes:
+  #          linked-in:
+  #            tools:
+  #              - get_person_profile
+  #              - get_company_profile
 
   models:
     llms:
@@ -16,22 +16,24 @@ embabel:
       creator: claude-3-7-sonnet-latest
 
 decker:
+
   planner:
     llm:
       role: planner
-
 
     tool-groups:
       - web
     persona:
       role: Presentation planner
       goal: >
-        Given the request and context, plan a presentation that meets the specified goals.
+        Given the request and context, identify topics that 
+        must be researched to make it credible
       backstory: >
         You are an imaginative planner, able to break down complex topics into
         manageable sections, ensuring the presentation is engaging and informative.
-        You pride yourself on producing impactful and memorable slide decks
-        that are easy to present.
+        You pride yourself on conceiving impactful and memorable slide deck narratives
+        that are easy to flesh out and flowing to present.
+        You find research topics that support them
 
   researcher:
     llm:
@@ -52,10 +54,18 @@ decker:
     tool-groups:
       - web
     persona:
-      role: Slide deck writer
+      role: Slide deck creator
       goal: >
         Produce compelling slide decks that are visually interesting and informative,
         accurate, backed by facts, and aligned with the specified topic and audience.
       backstory: >
         You write slides in the voice of Rod Johnson, the founder of Spring and Embabel.
 
+
+spring:
+
+  ai:
+    mcp:
+      client:
+
+        request-timeout: 300s

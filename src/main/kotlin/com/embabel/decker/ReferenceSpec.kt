@@ -5,6 +5,9 @@ import com.embabel.coding.tools.git.RepositoryReferenceProvider
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
+/**
+ * Serializable reference
+ */
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
@@ -28,8 +31,14 @@ data class GitHubRepository(
 
 data class WebPage(
     val url: String,
-    val description: String = "GitHub repository at $url",
-) : ReferenceSpec {
-    override fun reference(): LlmReference =
-        TODO()
+    override val description: String = "Web page at $url",
+) : ReferenceSpec, LlmReference {
+    override fun reference(): LlmReference = this
+
+    override fun notes(): String {
+        return "Refer to this web page: use the fetch tool"
+    }
+
+    override val name: String
+        get() = url
 }

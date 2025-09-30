@@ -25,6 +25,7 @@ import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchTopics
 import com.embabel.agent.prompt.persona.Actor
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
+import com.embabel.decker.data.DataManager
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
@@ -50,6 +51,7 @@ data class DeckerConfig(
 class Decker(
     private val slideFormatter: SlideFormatter,
     private val filePersister: FilePersister,
+    private val dataManager: DataManager,
     private val config: DeckerConfig,
 ) {
 
@@ -59,12 +61,16 @@ class Decker(
         logger.info("Decker initialized with config: {}", config)
     }
 
+
     @Action
     fun identifyResearchTopics(
         presentationRequest: PresentationRequest,
         ai: Ai
     ): ResearchTopics =
-        config.creator.promptRunner(ai)
+        config.planner.promptRunner(ai)
+            // TODO this should be changed to RAG as a reference
+            .withRag(dataManager.ragOptions())
+            .withReferences(presentationRequest.llmReferences)
             .create(
                 """
                 Create a list of research topics for a presentation,
@@ -82,7 +88,9 @@ class Decker(
     ): ResearchResult {
         val topicReports = researchTopics.topics.parallelMap(context) {
             config.researcher.promptRunner(context)
-                .withReferences(presentationRequest.references())
+                // TODO this should be changed to RAG as a reference
+                .withRag(dataManager.ragOptions())
+                .withReferences(presentationRequest.llmReferences + dataManager.references())
                 .withPromptContributor(presentationRequest)
                 .create<ResearchReport>(
                     """
@@ -110,7 +118,9 @@ class Decker(
     ): SlideDeck {
         val slideDeck = config.creator.promptRunner(ai)
             .withPromptContributor(presentationRequest)
-            .withReferences(presentationRequest.references())
+            .withReferences(presentationRequest.llmReferences + dataManager.references())
+            // TODO this should be changed to RAG as a reference
+            .withRag(dataManager.ragOptions())
             .create<SlideDeck>(
                 """
                 Create content for an impactful slide deck based on the given research.
