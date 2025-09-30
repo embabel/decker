@@ -1,0 +1,99 @@
+slideCount: 28
+presenterBio: >
+  Rod Johnson, Embabel. Creator of Spring and Embabel
+
+brief: >
+
+  Ideas for the flow:
+
+  Gen AI is amazing. show cool examples for personal use, personal assistant use case
+  Show failure statistics, recent MIT gartner etc and with quotes
+  Diagnose causes for this: Technology is nondeterministic, it's slow and expensive to run, things change all the time, best practice is emerging: ALSO it's not integrated with bsuiness, it's coming out of a diffferent team, Python frameworks aren't aligned with business, it's excessively vendor driven, vendors selling miraclesy
+
+  How do we fix this? Firstly we attack the nondeterminism and make agents as predictable as possible. Second we seek ways to integrate with what already works and not imagine we can reinvent the world
+
+  What is the role of Java developers?
+
+  We could imitate the Python world and copy their approaches. That approach is doomed to failure and if that's the best we can do (a) I'm very worried about the future and (b) go learn Python (you should know it anyway).
+
+  Or we could do more than play catchup. We could bring our assets to a far superior approach
+
+  The future of Gen AI for business is substantially on the JVM.
+
+  Embabel is a framework that attacks every one of these challenges
+  - Unique innovative planning element that is smart but deterministic. Actions/Goals allow an extensible system better than FSM of LangGraph or Crew AI but will always do the same thing
+  - Emphasis on strong typing and tooling
+  - Brings structure to LLM interactions vs just text (consider Embabel vs Python Crew AI examples)
+  - Ability to mix code actions and LLM invocation seamlessly for the maximum predictability possible (because of structure)
+  - Emphasis on domain modelling  and potential to integrate with what's already there
+  - Builds on Spring for easy adoption in Java
+  - Lovely modern API in Java or Kotlin
+  - Highly testable
+
+  Once more the Java community can do with Spring and open source did in 
+  taking back control from vendors and demonstrating what works
+  
+  As an example of Embabel's power, this slide deck was built by Embabel.
+  The Decker agent illustrates the core ideas. Pull example of how
+  Agents and Goals and AchievesGoal work.
+  
+  Conclusion:
+
+  You could go with vendor snake oil or start from scratch 
+  with an unimaginative python framework. Massive risk. 
+  Or try Embabel, the best agent framework everywhere. 
+  Put a little Gen AI into your apps today and then grow towards the full potential of unlocking your business value
+
+header: |
+  ---
+  marp: true
+  title: Gen AI Grows Up: Building Production-Ready Agents on the JVM
+  theme: default
+  paginate: false
+  class: invert
+  size: 16:9
+  ---
+
+images:
+  embabel:
+    useWhen: start of deck on title slide, end of deck. it's a tall image
+    url: https://raw.githubusercontent.com/embabel/embabel-agent/refs/heads/main/embabel-agent-api/images/315px-Meister_der_Weltenchronik_001.jpg
+  spring:
+    useWhen: on first slide mentioning spring
+    url: https://upload.wikimedia.org/wikipedia/commons/4/44/Spring_Framework_Logo_2018.svg
+  kotlin:
+    useWhen: background of first slide mentioning kotlin
+    url: https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kotlin_Icon.svg/1024px-Kotlin_Icon.svg.png?20171012085709
+  #  java:
+  #    - useWhen: x
+  #      url: https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg
+  spring-ai:
+    useWhen: first slide mentioning Spring AI
+    url: https://raw.githubusercontent.com/spring-io/spring-io-static/refs/heads/main/blog/tzolov/20250520/spring-ai-logo.png
+
+
+outputFile: goto.md
+
+references:
+  - type: github
+    url: https://github.com/embabel/embabel-agent
+    description: Embabel Agent Framework repository
+  - type: github
+    url: https://github.com/embabel/embabel-agent-examples
+    description: Embabel Agent Framework examples repository
+  - type: github
+    url: https://github.com/embabel/decker
+    description: The implementation of the presentation builder used to create this slide deck
+  - type: webpage
+    url: https://gotocph.com/2025/sessions/3893/gen-ai-grows-up-building-production-ready-agents-on-the-jvm
+    description: GOTO Copenhagen 2025 session details
+
+coStar:
+  context: talk at Goto Copenhagen 2025
+  objective: >
+    inspire the audience to look to the JVM for production ready Gen AI
+    and to try Embabel
+    Convey that Embabel is truly innovative
+  style: Rod Johnson on programming
+  tone: informative and entertaining. be provocative and challenge the audience
+  audience: Enterprise developers considering Gen AI

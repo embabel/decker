@@ -24,57 +24,15 @@ import com.embabel.agent.domain.io.FileArtifact
 import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchTopics
 import com.embabel.agent.prompt.persona.Actor
-import com.embabel.agent.prompt.persona.CoStar
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
-import com.embabel.common.ai.prompt.PromptContributor
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.validation.annotation.Validated
 
-data class ImageInfo(val url: String, val useWhen: String)
-
 data class ResearchResult(
     val topicReports: List<ResearchReport>,
 )
-
-/**
- * @param brief the content of the presentation. Can be short
- * or detailed
- * @param autoIllustrate ask the LLM to provide illustrations. Not yet dependable
- */
-data class PresentationRequest(
-    val slideCount: Int,
-    val presenterBio: String,
-    val brief: String,
-    val softwareProject: String?,
-    val outputDirectory: String = "/Users/rjohnson/Documents",
-    val outputFile: String = "presentation.md",
-    val header: String,
-    val images: Map<String, ImageInfo> = emptyMap(),
-    val autoIllustrate: Boolean = false,
-    //val slidesToInclude: String,
-    val coStar: CoStar,
-) : PromptContributor by coStar {
-
-    @JsonIgnore
-    val project: Project? =
-        softwareProject?.let {
-            Project(it)
-        }
-
-    /**
-     * File name for interim artifact with raw deck
-     */
-    fun rawOutputFile(): String {
-        return outputFile.replace(".md", ".raw.md")
-    }
-
-    fun withDiagramsOutputFile(): String {
-        return outputFile.replace(".md", ".withDiagrams.md")
-    }
-}
 
 @Validated
 @ConfigurationProperties(prefix = "decker")
@@ -124,14 +82,14 @@ class Decker(
     ): ResearchResult {
         val topicReports = researchTopics.topics.parallelMap(context) {
             config.researcher.promptRunner(context)
-                .withToolObject(presentationRequest.project)
+                .withReferences(presentationRequest.references())
                 .withPromptContributor(presentationRequest)
                 .create<ResearchReport>(
                     """
             Given the following topic and the goal to create a presentation
             for this audience, create a research report.
-            Use web tools to research and the findPatternInProject tool to look
-            within the given software project.
+            Use web tools to research and the find tools to look
+            within the given references.
             Always look for code examples in the project before using the web.
             Topic: ${it.topic}
             Questions:
@@ -152,7 +110,7 @@ class Decker(
     ): SlideDeck {
         val slideDeck = config.creator.promptRunner(ai)
             .withPromptContributor(presentationRequest)
-            .withToolObject(presentationRequest.project)
+            .withReferences(presentationRequest.references())
             .create<SlideDeck>(
                 """
                 Create content for an impactful slide deck based on the given research.

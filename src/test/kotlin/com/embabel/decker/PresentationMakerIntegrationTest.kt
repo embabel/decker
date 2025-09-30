@@ -72,7 +72,7 @@ class PresentationMakerIntegrationTest {
         footer: "(c) Embabel"
         ---
                 """.trimIndent(),
-                softwareProject = "/Users/rjohnson/dev/embabel.com/embabel-agent/embabel-agent-api",
+                references = emptyList(),
                 presenterBio = "John Smith",
                 coStar = CoStar(
                     context = "context",

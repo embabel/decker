@@ -43,6 +43,30 @@
         </dependency>
 
         <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-code</artifactId>
+            <version>${embabel-agent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-rag-lucene</artifactId>
+            <version>${embabel-agent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-rag-tika</artifactId>
+            <version>${embabel-agent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-rag-pipeline</artifactId>
+            <version>${embabel-agent.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
@@ -52,6 +76,7 @@
             <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-test</artifactId>
             <version>${embabel-agent.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -1,25 +1,12 @@
-/*
- * Copyright 2024-2025 Embabel Software, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.embabel.decker
+package com.embabel.decker.shell
 
 import com.embabel.agent.api.common.autonomy.AgentInvocation
 import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.domain.io.FileArtifact
+import com.embabel.decker.PresentationRequest
+import com.embabel.decker.data.DataManager
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -28,17 +15,27 @@ import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
 import org.springframework.shell.standard.ShellOption
 import java.nio.charset.Charset
+import java.nio.file.Path
 
 @ShellComponent("Presentation maker commands")
 class DeckerShell(
     private val agentPlatform: AgentPlatform,
     private val resourceLoader: ResourceLoader,
-    private val objectMapper: ObjectMapper,
+    private val dataManager: DataManager,
 ) {
+
+    @ShellMethod("load docs from data/docs")
+    fun loadDocs(): String {
+        val dir = Path.of(System.getProperty("user.dir"), "data", "docs").toString()
+        val directoryParsingResult =
+            dataManager.ingestDirectory(dir)
+        return "Loaded docs: " + directoryParsingResult
+    }
+
     @ShellMethod("Create a slide deck from a YAML description")
     fun deck(
         @ShellOption(
-            defaultValue = "file:/Users/rjohnson/dev/embabel.com/decker/inputs/kotlinconf_presentation.yml",
+            defaultValue = "file:/Users/rjohnson/dev/embabel.com/decker/inputs/goto_cph_25.yml",
         )
         file: String,
     ): String {
@@ -49,7 +46,7 @@ class DeckerShell(
             PresentationRequest::class.java,
         )
 
-        val fileArtifact = AgentInvocation.builder(agentPlatform)
+        val fileArtifact = AgentInvocation.Companion.builder(agentPlatform)
             .options(ProcessOptions(verbosity = Verbosity(showPrompts = true)))
             .build(FileArtifact::class.java)
             .invoke(presentationRequest)
