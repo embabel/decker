@@ -203,7 +203,6 @@ class Decker(
             withDiagrams
         } else {
             logger.info("Asking LLM to add illustrations to this resource")
-
             val illustrator = context.ai()
                 .withLlm(
                     LlmOptions(byRole("illustrator")).withTemperature(.3)

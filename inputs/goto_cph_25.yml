@@ -1,41 +1,55 @@
-slideCount: 30
+slideCount: 45
 presenterBio: >
   Rod Johnson, Embabel. Creator of Spring and Embabel
 
 brief: >
   
   General notes:
-  - NEVER make up any code. Look in the given projects
+  - DO NOT cram text on slides. Be zen and minimalist, conveying your ideas concisely.
+  NO BULLET LISTS longer than 5 (and that should be rare!) - NO ENTIRE PARAGRAPHS
+  - NEVER make up any code. Look in the given projects.
+  Use tools to find code if necessary.
 
-  Ideas for the flow:
+  Desired presentation flow:
 
   Gen AI is amazing. show cool examples for personal use, 
-  personal assistant use case
-  Show failure statistics on agent projects in business, recent MIT gartner etc and with quotes
+  personal assistant use case is compelling
+  Show failure statistics on agent projects in business, recent MIT gartner etc, with quotes
   
   Diagnose causes for this: 
   - Technology is nondeterministic, it's slow and expensive to run, 
   - things change all the time, 
-  - best practice is emerging: 
-  - it's not integrated with bsuiness, it's coming out of a diffferent team, Python frameworks aren't aligned with business, 
+  - best practice is emerging:
+  - it's not integrated with business, it's coming out of a different team, Python frameworks aren't aligned with business
   - it's excessively vendor driven, vendors selling snake oil
+  - central AI teams often don't understand the business and don't care about it
 
   How do we fix this? Firstly we attack the nondeterminism and make agents as predictable as possible. 
-  Second we seek ways to integrate with what already works and not imagine we can reinvent the world
+  Second we integrate with what already works and not imagine we can reinvent the world
+  
+  Integration with existing domain models is critical. Hence the importance of
+  Domain-Integrated Context Engineering. Show DICE graphic from Rod's blog.
 
   What is the role of Java developers?
 
   We could imitate the Python world and copy their approaches. 
   That approach is doomed to failure and if that's the best we can do 
-  (a) I'm very worried about the future and 
-  (b) go learn Python (you should know it anyway).
 
   Or we could do more than play catchup. 
-  We could bring our assets to a far superior approach
+  We could bring our assets to far superior approach
+  We understand the domain, much of the critical business logic is already in Java
+  We also have a strong understanding of software architecture at scale. 
 
-  The future of Gen AI for business is substantially on the JVM.
+  The JVM has a key role to play in the future of Gen AI in the enterprise.
+  Python is a great language for scripting and data science,
+  but IF YOU HAVE ZERO ENTERPRISE APPS IN PYTHON, THAT REMAINS THE RIGHT NUMBER.
+  
+  Once more the Java community can do with Spring and open source did in 
+  taking back control from vendors and demonstrating what works
 
-  Embabel is a framework that attacks every one of these challenges
+  Embabel is a framework that attacks every one of the challenges that cause Gen AI failures.
+  Not being the first mover is in this case a big advantage. As with Spring
+  it learns from what's there and adds genuinely new ideas
   - Unique innovative planning element that is smart but deterministic. Actions/Goals allow an extensible system better than FSM of LangGraph or Crew AI but will always do the same thing
   - Emphasis on strong typing and tooling
   - Brings structure to LLM interactions vs just text (consider Embabel vs Python Crew AI examples)
@@ -45,24 +59,23 @@ brief: >
   - Lovely modern API in Java or Kotlin
   - Highly testable
 
-  Once more the Java community can do with Spring and open source did in 
-  taking back control from vendors and demonstrating what works
-  
   As an example of Embabel's power, this slide deck was built by Embabel.
   The Decker agent illustrates the core ideas. Show example of how
-  Agents and Goals and AchievesGoal work from this project.
+  Agents and Goals and AchievesGoal drawn work from this project (Decker.kt)
   
   Conclusion:
 
   You could go with vendor snake oil or start from scratch 
-  with an unimaginative python framework. Massive risk. 
-  Or try Embabel, the best agent framework anywhere. 
+  with a Python framework. Massive risk. 
+  Or try Embabel, the best agent framework anywhere, with genuinely new ideas.
+  Bring your existing skills to the Gen AI world.
   
   CTA:
   Put a little Gen AI into your apps today and then grow towards 
   the full potential of unlocking your business value
   
   Use the Embabel java-agent-template to get started
+  What will you automate first?
 
 header: |
   ---
@@ -81,9 +94,12 @@ images:
   spring:
     useWhen: on first slide mentioning spring
     url: https://upload.wikimedia.org/wikipedia/commons/4/44/Spring_Framework_Logo_2018.svg
-  kotlin:
-    useWhen: background of first slide mentioning kotlin
-    url: https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kotlin_Icon.svg/1024px-Kotlin_Icon.svg.png?20171012085709
+  dice:
+    useWhen: DICE is mentioned
+    url: https://miro.medium.com/v2/resize:fit:1400/format:webp/1*wGd1RUwA0IDfTZa9MNZPGQ.jpeg
+  planning:
+    useWhen: Embabel planning is mentioned
+    url: https://miro.medium.com/v2/resize:fit:1400/format:webp/1*7zRgQXOVCCTeXIJdCyL7FQ.png
   java:
     useWhen: x
     url: https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg
