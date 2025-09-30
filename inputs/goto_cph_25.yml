@@ -8,7 +8,7 @@ brief: >
 
   Gen AI is amazing. show cool examples for personal use, 
   personal assistant use case
-  Show failure statistics on agent projects in busiess, recent MIT gartner etc and with quotes
+  Show failure statistics on agent projects in business, recent MIT gartner etc and with quotes
   Diagnose causes for this: 
   - Technology is nondeterministic, it's slow and expensive to run, 
   - things change all the time, 
@@ -75,9 +75,9 @@ images:
   kotlin:
     useWhen: background of first slide mentioning kotlin
     url: https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kotlin_Icon.svg/1024px-Kotlin_Icon.svg.png?20171012085709
-  #  java:
-  #    - useWhen: x
-  #      url: https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg
+    java:
+      - useWhen: x
+        url: https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg
   spring-ai:
     useWhen: first slide mentioning Spring AI
     url: https://raw.githubusercontent.com/spring-io/spring-io-static/refs/heads/main/blog/tzolov/20250520/spring-ai-logo.png
@@ -104,6 +104,12 @@ references:
   - type: webpage
     url: https://medium.com/@springrod
     description: Rod Johnson medium blog, read the individual blogs
+  - type: api
+    name: embabel-aent
+    description: Embabel Agent API
+    accepted-packages:
+      - com.embabel.agent
+      - com.embabel.common
 
 coStar:
   context: talk at Goto Copenhagen 2025

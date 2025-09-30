@@ -1,19 +1,11 @@
 embabel:
 
-  #  agent:
-  #    platform:
-  #      tools:
-  #        includes:
-  #          linked-in:
-  #            tools:
-  #              - get_person_profile
-  #              - get_company_profile
-
   models:
     llms:
       planner: claude-3-7-sonnet-latest
       researcher: gpt-4.1-mini
       creator: claude-3-7-sonnet-latest
+    default-embedding-model: text-embedding-3-small
 
 decker:
 
@@ -61,6 +53,9 @@ decker:
       backstory: >
         You write slides in the voice of Rod Johnson, the founder of Spring and Embabel.
 
+
+  top-k: 10
+  similarity-threshold: 0.6
 
 spring:
 

@@ -84,7 +84,7 @@ class PresentationMakerIntegrationTest {
             ),
         )
         assertEquals(AgentProcessStatusCode.COMPLETED, result.status)
-//        assertEquals(
+//        assertExquals(
 //            3,
 //            result.processContext.agentProcess.history.size,
 //            "Expected history:\nActual:\n${result.processContext.agentProcess.history.joinToString("\n")}"

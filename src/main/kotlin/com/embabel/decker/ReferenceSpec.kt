@@ -1,7 +1,9 @@
 package com.embabel.decker
 
 import com.embabel.agent.api.common.LlmReference
+import com.embabel.coding.tools.api.ApiReference
 import com.embabel.coding.tools.git.RepositoryReferenceProvider
+import com.embabel.coding.tools.jvm.ClassGraphApiReferenceExtractor
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
@@ -15,7 +17,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = GitHubRepository::class, name = "github"),
-    JsonSubTypes.Type(value = WebPage::class, name = "webpage")
+    JsonSubTypes.Type(value = WebPage::class, name = "webpage"),
+    JsonSubTypes.Type(value = Api::class, name = "api")
+
 )
 sealed interface ReferenceSpec {
     fun reference(): LlmReference
@@ -41,4 +45,22 @@ data class WebPage(
 
     override val name: String
         get() = url
+}
+
+data class Api(
+    val name: String,
+    val description: String,
+    val acceptedPackages: List<String>,
+) : ReferenceSpec {
+    override fun reference(): LlmReference {
+        return ApiReference(
+            description = description,
+            api = ClassGraphApiReferenceExtractor().fromProjectClasspath(
+                name = name,
+                acceptedPackages = acceptedPackages.toSet(),
+                emptySet()
+            ),
+            100
+        )
+    }
 }

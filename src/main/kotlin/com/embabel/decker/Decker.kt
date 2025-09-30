@@ -20,12 +20,16 @@ import com.embabel.agent.api.common.Ai
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.create
 import com.embabel.agent.api.dsl.parallelMap
+import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.domain.io.FileArtifact
 import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchTopics
 import com.embabel.agent.prompt.persona.Actor
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
-import com.embabel.decker.data.DataManager
+import com.embabel.agent.rag.HyDE
+import com.embabel.agent.rag.tools.RagOptions
+import com.embabel.common.core.types.SimilarityCutoff
+import com.embabel.common.core.types.ZeroToOne
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
@@ -41,7 +45,17 @@ data class DeckerConfig(
     @NestedConfigurationProperty val planner: Actor<RoleGoalBackstory>,
     @NestedConfigurationProperty val researcher: Actor<RoleGoalBackstory>,
     @NestedConfigurationProperty val creator: Actor<RoleGoalBackstory>,
-)
+    override val similarityThreshold: ZeroToOne = .6,
+    override val topK: Int = 8,
+) : SimilarityCutoff {
+
+    fun ragOptions(): RagOptions {
+        return RagOptions()
+            .withSimilarityThreshold(similarityThreshold)
+            .withTopK(topK)
+            .withHyDE(HyDE(40))
+    }
+}
 
 
 /**
@@ -51,7 +65,6 @@ data class DeckerConfig(
 class Decker(
     private val slideFormatter: SlideFormatter,
     private val filePersister: FilePersister,
-    private val dataManager: DataManager,
     private val config: DeckerConfig,
 ) {
 
@@ -61,7 +74,6 @@ class Decker(
         logger.info("Decker initialized with config: {}", config)
     }
 
-
     @Action
     fun identifyResearchTopics(
         presentationRequest: PresentationRequest,
@@ -69,7 +81,7 @@ class Decker(
     ): ResearchTopics =
         config.planner.promptRunner(ai)
             // TODO this should be changed to RAG as a reference
-            .withRag(dataManager.ragOptions())
+            .withRag(config.ragOptions())
             .withReferences(presentationRequest.llmReferences)
             .create(
                 """
@@ -89,8 +101,8 @@ class Decker(
         val topicReports = researchTopics.topics.parallelMap(context) {
             config.researcher.promptRunner(context)
                 // TODO this should be changed to RAG as a reference
-                .withRag(dataManager.ragOptions())
-                .withReferences(presentationRequest.llmReferences + dataManager.references())
+                .withRag(config.ragOptions())
+                .withReferences(presentationRequest.llmReferences)
                 .withPromptContributor(presentationRequest)
                 .create<ResearchReport>(
                     """
@@ -118,9 +130,9 @@ class Decker(
     ): SlideDeck {
         val slideDeck = config.creator.promptRunner(ai)
             .withPromptContributor(presentationRequest)
-            .withReferences(presentationRequest.llmReferences + dataManager.references())
+            .withReferences(presentationRequest.llmReferences)
             // TODO this should be changed to RAG as a reference
-            .withRag(dataManager.ragOptions())
+            .withRag(config.ragOptions())
             .create<SlideDeck>(
                 """
                 Create content for an impactful slide deck based on the given research.
@@ -169,6 +181,9 @@ class Decker(
         return slideDeck
     }
 
+    /**
+     * We use outputBindings -> @RequireNameMatch to perform a series of steps here
+     */
     @Action(outputBinding = "withDiagrams", cost = 1.0)
     fun expandDigraphs(
         slideDeck: SlideDeck,
@@ -210,9 +225,11 @@ class Decker(
         } else {
             logger.info("Asking LLM to add illustrations to this resource")
 
-            val illustrator = context.ai().withLlm(
-                config.researcher.llm.withTemperature(.3)
-            )
+            val illustrator = context.ai()
+                .withLlm(
+                    config.researcher.llm.withTemperature(.3)
+                )
+                .withTools(CoreToolGroups.WEB)
             val newSlides = withDiagrams.slides().map { slide ->
                 val newContent = illustrator.generateText(
                     """

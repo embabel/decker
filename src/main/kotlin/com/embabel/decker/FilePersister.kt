@@ -39,7 +39,6 @@ interface FilePersister {
 @Service
 class FileToolsFilePersister : FilePersister {
 
-
     override fun saveFile(
         directory: String,
         fileName: String,
