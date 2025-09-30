@@ -2,9 +2,11 @@ embabel:
 
   models:
     llms:
-      planner: claude-3-7-sonnet-latest
+      planner: gpt-4.1
       researcher: gpt-4.1-mini
-      creator: claude-3-7-sonnet-latest
+      creator: gpt-4.1
+
+      # claude-3-7-sonnet-latest
     default-embedding-model: text-embedding-3-small
 
 decker:

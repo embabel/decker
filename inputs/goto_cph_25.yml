@@ -107,7 +107,7 @@ references:
     url: https://medium.com/@springrod
     description: Rod Johnson medium blog, read the individual blogs
   - type: api
-    name: embabel-aent
+    name: embabel-agent
     description: Embabel Agent API
     acceptedPackages:
       - com.embabel.agent
