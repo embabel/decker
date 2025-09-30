@@ -4,7 +4,9 @@ embabel:
     llms:
       planner: gpt-4.1
       researcher: gpt-4.1-mini
+      # claude-3-5-haiku-latest
       creator: gpt-4.1
+      illustrator: gpt-4.1-mini
 
       # claude-3-7-sonnet-latest
     default-embedding-model: text-embedding-3-small
@@ -58,7 +60,7 @@ decker:
 
   top-k: 10
   similarity-threshold: 0.6
-  concurrency-level: 10
+  concurrency-level: 6
 
 spring:
 

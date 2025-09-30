@@ -27,7 +27,9 @@ import java.time.Instant
 data class Slide(
     val number: Int,
     val content: String,
-)
+) {
+    fun withContent(newContent: String): Slide = Slide(number, newContent)
+}
 
 /**
  * Domain object for a Markdown slide deck.
@@ -106,7 +108,7 @@ $slideContents
         }
 
         val currentHeader = header()
-        val slideContents = updatedSlides.joinToString("\n---\n") { it.content }
+        val slideContents = updatedSlides.joinToString("\n\n---\n\n") { it.content }
 
         return SlideDeck(
             """---

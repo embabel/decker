@@ -28,6 +28,8 @@ import com.embabel.agent.prompt.persona.Actor
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.agent.rag.HyDE
 import com.embabel.agent.rag.tools.RagOptions
+import com.embabel.common.ai.model.LlmOptions
+import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byRole
 import com.embabel.common.core.types.SimilarityCutoff
 import com.embabel.common.core.types.ZeroToOne
 import org.slf4j.LoggerFactory
@@ -200,22 +202,28 @@ class Decker(
 
             val illustrator = context.ai()
                 .withLlm(
-                    config.researcher.llm.withTemperature(.3)
+                    LlmOptions(byRole("illustrator")).withTemperature(.3)
                 )
                 .withTools(CoreToolGroups.WEB)
-            val newSlides = withDiagrams.slides().map { slide ->
+            val newSlides = context.parallelMap(
+                items = withDiagrams.slides(),
+                maxConcurrency = config.concurrencyLevel
+            ) { slide ->
                 val newContent = illustrator.generateText(
                     """
                 Take the following slide in MARP format.
+                The content is inside <slide> tags.
                 Overall objective: ${presentationRequest.brief}
 
                 If the slide contains an important point, try to add an image to it
+                DO NOT DO THIS FOR EVERY SLIDE--only where it may make an impact
                 Check that the image is available.
-                Don't make the image too big.
+                Format it so that you don't make the image too big.
                 Put the image on the right.
                 Make no other changes.
                 Do not perform any web research besides seeking images.
                 Return nothing but the amended slide content (the content between <slide></slide>).
+                Do not include <slide> tags
                 Do not ask any questions.
                 If you don't think an image is needed, return the slide unchanged.
 
@@ -223,7 +231,6 @@ class Decker(
                 ${slide.content}
                 </slide>
             """.trimIndent()
-
                 )
                 Slide(
                     number = slide.number,
