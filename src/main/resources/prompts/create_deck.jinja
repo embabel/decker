@@ -22,6 +22,12 @@ if required and format code on slides.
 Use Marp format, creating Markdown that can be rendered as slides.
 If you need to look it up, see https://github.com/marp-team/marp/blob/main/website/docs/guide/directives.md
 
+If a particular slide needs to be illustrated, add an HTML comment
+to the content
+like this, starting with ILLUSTRATE: and specifying the query to use for images:
+<!-- ILLUSTRATE: big house -->
+DO NOT ILLUSTRATE EVERY SLIDE: only slides where it will make a real impact.
+
 If you include GraphViz dot diagrams, do NOT enclose them in ```
 DO start with dot e.g. "dot digraph..."
 

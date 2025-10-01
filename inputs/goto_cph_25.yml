@@ -1,4 +1,4 @@
-slideCount: 45
+slideCount: 39
 presenterBio: >
   Rod Johnson, Embabel. Creator of Spring and Embabel
 
@@ -13,9 +13,11 @@ brief: >
 
   Desired presentation flow:
 
-  Gen AI is amazing. show cool examples for personal use, 
-  personal assistant use case is compelling
-  Show failure statistics on agent projects in business, recent MIT gartner etc, with quotes
+  Gen AI is amazing.  
+  personal assistant use case is compelling (ChatGPT)
+  even grows to areas such as coding (Claude Code)
+  BUT... Show failure statistics on agent projects in business, recent MIT gartner etc, with quotes
+  that support our arguments (not unrelated)
   
   Diagnose causes for this: 
   - Technology is nondeterministic, it's slow and expensive to run
@@ -89,13 +91,79 @@ header: |
   ---
   marp: true
   title: Gen AI Grows Up: Building Production-Ready Agents on the JVM
-  theme: default
+  theme: embabel
   paginate: false
   class: invert
   size: 16:9
+  style: |
+  /* 1) Clean stacking context so z-index works predictably */
+  section {
+    position: relative;
+    background-color: #000;
+  }
+
+  /* Your banner stays behind everything */
+  section::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 20%;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,1) 100%),
+      linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 15%, rgba(0,0,0,0) 85%, rgba(0,0,0,1) 100%),
+      url("bg3.jpg") center top / cover no-repeat;
+    opacity: 0.25;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Ensure Marp's bg images stay behind banner */
+  section[data-marpit-advanced-background] > figure {
+    z-index: 0 !important;
+  }
+
+  /* All slide content stays on top - each gets its own stacking context */
+  section > h1,
+  section > h2,
+  section > h3,
+  section > h4,
+  section > h5,
+  section > h6,
+  section > p,
+  section > ul,
+  section > ol,
+  section > blockquote,
+  section > pre,
+  section > img {
+    position: relative;
+    z-index: 2;
+    isolation: isolate;
+    mix-blend-mode: normal !important;
+  }
+
+  /* Force readable headings */
+  h1, h2, h3, h4, h5 {
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(0,0,0,.6);
+  }
+
+  /* Optional: add a subtle shield behind headings */
+  .heading-shield {
+    display: inline-block;
+    background: rgba(0,0,0,.45);
+    padding: .2em .5em;
+    border-radius: .3em;
+  }
   ---
 
 images:
+  chatgpt:
+    useWhen: Personal productivity is mentioned
+    url: https://blog.routinehub.co/content/images/2023/02/openAI-chat-gpt-1.jpg
+  claudecode:
+    useWhen: Claude is mentioned
+    url: https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F3613f360926fae004521197488623465eb0cd751-1920x1035.png&w=1920&q=75
   embabel:
     useWhen: start of deck on title slide, end of deck. it's a tall image
     url: https://raw.githubusercontent.com/embabel/embabel-agent/refs/heads/main/embabel-agent-api/images/315px-Meister_der_Weltenchronik_001.jpg
@@ -108,6 +176,9 @@ images:
   planning:
     useWhen: Embabel planning is mentioned
     url: https://miro.medium.com/v2/resize:fit:1400/format:webp/1*7zRgQXOVCCTeXIJdCyL7FQ.png
+  alchemy:
+    useWhen: Prompt engineering is mentioned
+    url: https://miro.medium.com/v2/resize:fit:1100/format:webp/0*MiStqQmi4dP-dFp2.jpeg
   java:
     useWhen: x
     url: https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg

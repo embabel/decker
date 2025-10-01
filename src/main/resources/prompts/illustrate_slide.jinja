@@ -5,14 +5,14 @@ The content is inside
 This slide sits as part of a presentation with the following content:
 {{ presentationRequest.brief }}
 
+If the slide contains an HTML comment like this:
+<!-- ILLUSTRATE: big house -->
+
 Add an image to this slide IF IT WILL MAKE AN IMPACT
 AND MAKE THE POINT CLEARER.
-DO NOT DO THIS FOR EVERY SLIDE.
+
 DO NOT USE AN IMAGE UNLESS YOU CAN FIND ONE THAT IS
 DIRECTLY RELEVANT TO THE POINT
-DON'T ADD AN IMAGE JUST FOR THE SAKE OF IT.
-DON'T ADD unless it's a slam dunk
-Maybe 1/5 slides need images, remember that.
 
 Check that the image is available.
 Format it so that you don't make the image too big.
@@ -26,6 +26,16 @@ Do not include
 tags
 If you don't think an image is needed, return the slide unchanged.
 
+Formatting instructions:
+Use this formula with a div, a class of "columns-left" and the image after the div.
+
+<!-- _class: columns-left -->
+<div>
+    ...text content of the slide
+</div>
+![alt text](image_url)
+
+Heres' the content:
 <slide>
     {{ slideContent }}
 </slide>

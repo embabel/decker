@@ -1,0 +1,435 @@
+/* @theme embabel */
+
+@import 'default';
+
+/* ========================================
+   Embabel Custom Marp Theme
+   Matches the main app's fonts and colors
+   ======================================== */
+
+:root {
+  /* Color palette - matching tailwind.css */
+  --background-light: oklch(1 0 0);
+  --foreground-light: oklch(0.147 0.004 49.25);
+  --primary-light: oklch(0.216 0.006 56.043);
+  --primary-foreground-light: oklch(0.985 0.001 106.423);
+  --muted-light: oklch(0.97 0.001 106.424);
+  --muted-foreground-light: oklch(0.553 0.013 58.071);
+  --accent-light: oklch(0.97 0.001 106.424);
+  --border-light: oklch(0.923 0.003 48.717);
+
+  --background-dark: oklch(0.147 0.004 49.25);
+  --foreground-dark: oklch(0.985 0.001 106.423);
+  --primary-dark: oklch(0.923 0.003 48.717);
+  --primary-foreground-dark: oklch(0.216 0.006 56.043);
+  --muted-dark: oklch(0.268 0.007 34.298);
+  --muted-foreground-dark: oklch(0.709 0.01 56.259);
+  --accent-dark: oklch(0.268 0.007 34.298);
+  --border-dark: oklch(1 0 0 / 10%);
+}
+
+/* Light mode (default) */
+section {
+  background-color: var(--background-light);
+  color: var(--foreground-light);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  font-size: 2rem;
+  line-height: 1.4;
+  padding: 60px 80px;
+}
+
+/* Dark mode (with .invert class) */
+section.invert {
+  background-color: var(--background-dark);
+  color: var(--foreground-dark);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+section h1,
+section div h1 {
+  font-size: 3.6rem;
+  line-height: 1.1;
+  color: var(--foreground-light);
+  margin-bottom: 1.5rem;
+}
+
+section.invert h1,
+section.invert div h1 {
+  color: var(--foreground-dark);
+}
+
+section h2,
+section div h2 {
+  font-size: 2.7rem;
+  line-height: 1.2;
+  color: var(--primary-light);
+}
+
+section.invert h2,
+section.invert div h2 {
+  color: var(--primary-dark);
+}
+
+section h3,
+section div h3 {
+  font-size: 2.25rem;
+  line-height: 1.25;
+}
+
+section h4,
+section div h4 {
+  font-size: 1.8rem;
+  line-height: 1.3;
+}
+
+section h5,
+section div h5 {
+  font-size: 1.5rem;
+  line-height: 1.35;
+  color: #09a977 !important;
+}
+
+section.invert h5,
+section.invert div h5 {
+  color: #09a977 !important;
+}
+
+section h6,
+section div h6 {
+  font-size: 1.35rem;
+  line-height: 1.4;
+  color: #09a977;
+}
+
+section.invert h6,
+section.invert div h6 {
+  color: #09a977;
+}
+
+/* Paragraphs */
+section p,
+section div p {
+  margin-bottom: 1rem;
+  margin-top: 0;
+  line-height: 1.75rem;
+}
+
+/* Lists */
+section ul,
+section ol,
+section div ul,
+section div ol {
+  margin-bottom: 1rem;
+  margin-top: 0;
+  padding-left: 2em;
+  line-height: 1.9;
+}
+
+section li,
+section div li {
+  margin-bottom: 0.75rem;
+}
+
+/* Links */
+section a,
+section div a {
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+section.invert a,
+section.invert div a {
+  color: var(--primary-dark);
+}
+
+section a:hover,
+section div a:hover {
+  text-decoration: underline;
+}
+
+/* Code blocks */
+section pre {
+  background-color: var(--muted-light);
+  border-radius: 0.625rem;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 2rem;
+  line-height: 1.7;
+}
+
+section.invert pre {
+  background-color: var(--muted-dark);
+}
+
+section code,
+section p code,
+section li code,
+section blockquote code,
+section div code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 2rem !important;
+  background-color: var(--muted-light);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+section.invert code,
+section.invert p code,
+section.invert li code,
+section.invert blockquote code,
+section.invert div code {
+  background-color: var(--muted-dark);
+}
+
+/* Blockquotes */
+section blockquote,
+section div blockquote {
+  border-left: 0.25em solid #09a977;
+  color: #09a977;
+  margin: 1rem 0 2rem 0;
+  padding: 0 1em;
+  line-height: 1.9;
+}
+
+section blockquote p,
+section div blockquote p {
+  line-height: 1.7;
+}
+
+section.invert blockquote,
+section.invert div blockquote {
+  border-left-color: #09a977;
+  color: #09a977;
+}
+
+/* Images - FIXED TO PREVENT CLIPPING */
+section img {
+  max-width: 100%;
+  max-height: 75vh;     /* keep inside the viewport */
+  object-fit: contain;
+  border-radius: 0.625rem;
+  display: block;
+  margin: 1rem auto;
+}
+
+/* Tables */
+section table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+section th,
+section td {
+  border: 1px solid var(--border-light);
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+section.invert th,
+section.invert td {
+  border-color: var(--border-dark);
+}
+
+section th {
+  background-color: var(--muted-light);
+  font-weight: 600;
+}
+
+section.invert th {
+  background-color: var(--muted-dark);
+}
+
+/* Strong/Bold text */
+section strong,
+section div strong {
+  font-weight: 600;
+  color: var(--foreground-light);
+}
+
+section.invert strong,
+section.invert div strong {
+  color: var(--foreground-dark);
+}
+
+/* Emphasis/Italic text */
+section em,
+section div em {
+  font-style: italic;
+}
+
+/* Horizontal rules */
+section hr {
+  border: 0;
+  border-top: 1px solid var(--border-light);
+  margin: 2rem 0;
+}
+
+section.invert hr {
+  border-top-color: var(--border-dark);
+}
+
+/* Footer (page number) */
+section footer {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  font-size: 0.875rem;
+  color: var(--muted-foreground-light);
+}
+
+section.invert footer {
+  color: var(--muted-foreground-dark);
+}
+
+/* Header */
+section header {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  font-size: 0.875rem;
+  color: var(--muted-foreground-light);
+}
+
+section.invert header {
+  color: var(--muted-foreground-dark);
+}
+
+/* Two-column layout for slides */
+section.columns {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  gap: 2rem;
+  align-items: center;
+  height: 100%;
+}
+
+/* Left column larger (65% left, 35% right) - for text-heavy slides */
+section.columns-left {
+  display: grid;
+  grid-template-columns: 65% 35%;
+  gap: 2rem;
+  align-items: center;
+  height: 100%;
+}
+
+/* Right column larger (35% left, 65% right) - for image-heavy slides */
+section.columns-right {
+  display: grid;
+  grid-template-columns: 35% 65%;
+  gap: 2rem;
+  align-items: center;
+  height: 100%;
+}
+
+/* Shared styles for all column layouts */
+section.columns > *,
+section.columns-left > *,
+section.columns-right > * {
+  z-index: 2;
+  isolation: isolate;
+  mix-blend-mode: normal !important;
+}
+
+section.columns div,
+section.columns-left div,
+section.columns-right div {
+  z-index: 2;
+  isolation: isolate;
+  mix-blend-mode: normal !important;
+  color: inherit !important;
+}
+
+section.columns div > *,
+section.columns-left div > *,
+section.columns-right div > * {
+  z-index: 2;
+  isolation: isolate;
+  mix-blend-mode: normal !important;
+}
+
+section.columns div p,
+section.columns-left div p,
+section.columns-right div p {
+  color: var(--foreground-dark) !important;
+}
+
+section.columns div p *,
+section.columns-left div p *,
+section.columns-right div p * {
+  color: var(--foreground-dark) !important;
+}
+
+/* Links in columns should be green */
+section.columns div a,
+section.columns-left div a,
+section.columns-right div a {
+  color: #09a977 !important;
+}
+
+/* Code in links should also be green */
+section.columns div a code,
+section.columns-left div a code,
+section.columns-right div a code {
+  color: #09a977 !important;
+  background-color: var(--muted-dark) !important;
+}
+
+/* All code blocks in columns should have grey background */
+section.columns div code,
+section.columns-left div code,
+section.columns-right div code {
+  background-color: var(--muted-dark) !important;
+}
+
+section.columns div ul,
+section.columns div ol,
+section.columns-left div ul,
+section.columns-left div ol,
+section.columns-right div ul,
+section.columns-right div ol {
+  color: var(--foreground-dark) !important;
+}
+
+section.columns div li,
+section.columns-left div li,
+section.columns-right div li {
+  color: var(--foreground-dark) !important;
+}
+
+section.columns div ol > li,
+section.columns-left div ol > li,
+section.columns-right div ol > li {
+  color: var(--foreground-dark) !important;
+}
+
+section.columns div ol > li *,
+section.columns-left div ol > li *,
+section.columns-right div ol > li * {
+  color: var(--foreground-dark) !important;
+}
+
+section.columns div ul > li *,
+section.columns-left div ul > li *,
+section.columns-right div ul > li * {
+  color: var(--foreground-dark) !important;
+}
+
+section.columns img,
+section.columns-left img,
+section.columns-right img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+  z-index: 2;
+  isolation: isolate;
+}

@@ -5,7 +5,7 @@ embabel:
       planner: gpt-4.1
       researcher: gpt-4.1-mini
       # claude-3-5-haiku-latest
-      creator: gpt-4.1
+      creator: claude-3-7-sonnet-la test
       illustrator: gpt-4.1-mini
 
       # claude-3-7-sonnet-latest

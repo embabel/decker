@@ -15,3 +15,6 @@ embabel-agent-api/src/main/resources/mcp/**
 lucene-index
 
 output
+
+assets/goto.html
+assets/goto.md

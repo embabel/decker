@@ -209,7 +209,8 @@ class Decker(
                 )
                 .withTools(CoreToolGroups.WEB)
             val newSlides = context.parallelMap(
-                items = withDiagrams.slides(),
+                items = withDiagrams.slides()
+                    .filter { it.content.contains("ILLUSTRATE:") },
                 maxConcurrency = config.concurrencyLevel
             ) { slide ->
                 val newContent = illustrator
