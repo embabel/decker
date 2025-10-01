@@ -9,6 +9,7 @@ brief: >
   NO BULLET LISTS longer than 5 (and that should be rare!) - NO ENTIRE PARAGRAPHS
   - NEVER make up any code. Look in the given projects.
   Use tools to find code if necessary.
+  - Define terms enclosed in **
 
   Desired presentation flow:
 
@@ -17,16 +18,21 @@ brief: >
   Show failure statistics on agent projects in business, recent MIT gartner etc, with quotes
   
   Diagnose causes for this: 
-  - Technology is nondeterministic, it's slow and expensive to run, 
-  - things change all the time, 
-  - best practice is emerging:
+  - Technology is nondeterministic, it's slow and expensive to run
+  - *Prompt engineering* is a black art
+  - things change all the time
+  - best practice is emerging
   - it's not integrated with business, it's coming out of a different team, Python frameworks aren't aligned with business
   - it's excessively vendor driven, vendors selling snake oil
-  - central AI teams often don't understand the business and don't care about it
+  - very top down: Grand strategy from the top, but no idea how to execute it. We've seen this movie before
+  - Organizational issues: central AI teams often don't understand the business and don't care about it
 
   How do we fix this? Firstly we attack the nondeterminism and make agents as predictable as possible. 
-  Second we integrate with what already works and not imagine we can reinvent the world
+  Second we integrate with what already works and not imagine we can reinvent the world.
   
+  We must bring structure to LLM interactions, both in and out.
+  Get beyond string typing.
+  We should seek to speak domain language to LLMs, not just text.
   Integration with existing domain models is critical. Hence the importance of
   Domain-Integrated Context Engineering. Show DICE graphic from Rod's blog.
 
@@ -45,28 +51,30 @@ brief: >
   but IF YOU HAVE ZERO ENTERPRISE APPS IN PYTHON, THAT REMAINS THE RIGHT NUMBER.
   
   Once more the Java community can do with Spring and open source did in 
-  taking back control from vendors and demonstrating what works
+  demonstrating practical solutions
 
   Embabel is a framework that attacks every one of the challenges that cause Gen AI failures.
   Not being the first mover is in this case a big advantage. As with Spring
   it learns from what's there and adds genuinely new ideas
-  - Unique innovative planning element that is smart but deterministic. Actions/Goals allow an extensible system better than FSM of LangGraph or Crew AI but will always do the same thing
+  - Unique innovative planning element that is smart but deterministic. 
+  Actions/Goals allow an extensible system better than FSM of LangGraph or Crew AI sequential operations,
+  but will always do the same thing. Explain actions/goals
   - Emphasis on strong typing and tooling
   - Brings structure to LLM interactions vs just text (consider Embabel vs Python Crew AI examples)
   - Ability to mix code actions and LLM invocation seamlessly for the maximum predictability possible (because of structure)
   - Emphasis on domain modelling  and potential to integrate with what's already there
   - Builds on Spring for easy adoption in Java
   - Lovely modern API in Java or Kotlin
-  - Highly testable
+  - Agents are highly testable
 
   As an example of Embabel's power, this slide deck was built by Embabel.
   The Decker agent illustrates the core ideas. Show example of how
-  Agents and Goals and AchievesGoal drawn work from this project (Decker.kt)
+  Agents and Goals and AchievesGoal drawn from this project (Decker.kt)
   
   Conclusion:
 
   You could go with vendor snake oil or start from scratch 
-  with a Python framework. Massive risk. 
+  with a Python framework, with friction to get at your Java. Massive risk. 
   Or try Embabel, the best agent framework anywhere, with genuinely new ideas.
   Bring your existing skills to the Gen AI world.
   
