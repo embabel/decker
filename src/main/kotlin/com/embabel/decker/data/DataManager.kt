@@ -1,8 +1,8 @@
 package com.embabel.decker.data
 
-import com.embabel.agent.rag.WritableContentElementRepository
 import com.embabel.agent.rag.ingestion.DirectoryParsingResult
-import com.embabel.agent.rag.ingestion.HierarchicalContentReader
+import com.embabel.agent.rag.ingestion.TikaHierarchicalContentReader
+import com.embabel.agent.rag.lucene.LuceneSearchOperations
 import com.embabel.agent.tools.file.FileTools
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
  */
 @Service
 class DataManager(
-    private val store: WritableContentElementRepository,
+    private val store: LuceneSearchOperations,
 ) {
     private val logger = LoggerFactory.getLogger(DataManager::class.java)
 
@@ -20,7 +20,7 @@ class DataManager(
         store.provision()
     }
 
-    fun count(): Int = store.count()
+    fun count(): Int = store.info().chunkCount
 
     /**
      * Read all files under this directory
@@ -32,11 +32,11 @@ class DataManager(
 
         val ft = FileTools.readOnly(dir)
 
-        val directoryParsingResult = HierarchicalContentReader()
+        val directoryParsingResult = TikaHierarchicalContentReader()
             .parseFromDirectory(ft)
         for (root in directoryParsingResult.contentRoots) {
-            logger.info("Parsed root: {} with {} descendants", root.title, root.descendants().size)
-            store.writeContent(root)
+            logger.info("Parsed root: {} with {} descendants", root.title, root.descendants().count())
+            store.writeAndChunkDocument(root)
         }
         return directoryParsingResult
     }

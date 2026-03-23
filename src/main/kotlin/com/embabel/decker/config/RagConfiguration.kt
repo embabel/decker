@@ -1,15 +1,16 @@
 package com.embabel.decker.config
 
-import com.embabel.agent.rag.RagService
 import com.embabel.agent.rag.ingestion.ContentChunker
-import com.embabel.agent.rag.lucene.LuceneRagFacetProvider
-import com.embabel.agent.rag.support.FacetedRagService
+import com.embabel.agent.rag.lucene.LuceneSearchOperations
+import com.embabel.agent.rag.service.RagService
+import com.embabel.agent.rag.service.support.FacetedRagService
+import com.embabel.agent.rag.service.support.RagFacetProvider
 import com.embabel.common.ai.model.DefaultModelSelectionCriteria
 import com.embabel.common.ai.model.ModelProvider
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import kotlin.io.path.Path
+import java.nio.file.Path
 
 @Configuration
 class RagConfiguration {
@@ -17,26 +18,23 @@ class RagConfiguration {
     private val logger = LoggerFactory.getLogger(RagConfiguration::class.java)
 
     @Bean
-    fun luceneRagFacetProvider(modelProvider: ModelProvider): LuceneRagFacetProvider {
+    fun luceneSearchOperations(modelProvider: ModelProvider): LuceneSearchOperations {
         val embeddingService = modelProvider.getEmbeddingService(DefaultModelSelectionCriteria)
         logger.info(
             "Using embedding service {} with dimensions {}",
             embeddingService.name,
-            embeddingService.model.dimensions()
+            embeddingService.dimensions,
         )
-        val lucene = LuceneRagFacetProvider(
-            "docs",
-            embeddingService.model,
-            0.5,
-            ContentChunker.DefaultConfig(),
-            Path("./lucene-index")
-        )
-        lucene.loadExistingChunksFromDisk()
-        return lucene
+        return LuceneSearchOperations.builder()
+            .withName("docs")
+            .withEmbeddingService(embeddingService)
+            .withChunkerConfig(ContentChunker.Config())
+            .withIndexPath(Path.of("./lucene-index"))
+            .buildAndLoadChunks()
     }
 
     @Bean
-    fun ragService(facetProviders: List<LuceneRagFacetProvider>): RagService {
+    fun ragService(facetProviders: List<RagFacetProvider>): RagService {
         return FacetedRagService(
             name = "Information about Embabel",
             facets = emptyList(),

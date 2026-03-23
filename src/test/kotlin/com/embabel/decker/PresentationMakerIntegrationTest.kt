@@ -16,12 +16,15 @@
 package com.embabel.decker
 
 import com.embabel.agent.api.annotation.support.AgentMetadataReader
+import com.embabel.agent.api.common.Actor
 import com.embabel.agent.core.Agent
 import com.embabel.agent.core.AgentProcessStatusCode
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.domain.io.FileArtifact
 import com.embabel.agent.prompt.persona.CoStar
-import com.embabel.agent.testing.integration.IntegrationTestUtils.dummyAgentPlatform
+import com.embabel.agent.prompt.persona.RoleGoalBackstory
+import com.embabel.agent.test.integration.IntegrationTestUtils.dummyAgentPlatform
+import com.embabel.common.ai.model.LlmOptions
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -43,18 +46,18 @@ class PresentationMakerIntegrationTest {
         val agent: Agent = AgentMetadataReader().createAgentMetadata(
             Decker(
                 config = DeckerConfig(
-                    mockk(), mockk(), mockk(),
+                    planner = Actor(RoleGoalBackstory("planner", "plan decks", "planning"), LlmOptions()),
+                    researcher = Actor(RoleGoalBackstory("researcher", "research topics", "researching"), LlmOptions()),
+                    creator = Actor(RoleGoalBackstory("creator", "create slides", "creating"), LlmOptions()),
                 ),
                 filePersister = mockFilePersister,
                 slideFormatter = mockSlideFormatter,
+                ragService = mockk(relaxed = true),
             ),
         ) as Agent
         val ap = dummyAgentPlatform()
         val processOptions = ProcessOptions()
-        val result = ap.runAgentWithInput(
-            agent = agent,
-            processOptions = processOptions,
-            input = PresentationRequest(
+        val presentationRequest = PresentationRequest(
                 slideCount = 10,
                 brief = "Create a presentation about AI",
                 header = """
@@ -81,7 +84,11 @@ class PresentationMakerIntegrationTest {
                     tone = "tone",
                     audience = "audience",
                 )
-            ),
+            )
+        val result = ap.runAgentFrom(
+            agent = agent,
+            processOptions = processOptions,
+            bindings = mapOf("presentationRequest" to presentationRequest),
         )
         assertEquals(AgentProcessStatusCode.COMPLETED, result.status)
 //        assertExquals(

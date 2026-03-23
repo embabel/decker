@@ -1,6 +1,6 @@
 package com.embabel.decker
 
-import com.embabel.agent.api.common.LlmReference
+import com.embabel.agent.api.reference.LlmReference
 import com.embabel.agent.prompt.persona.CoStar
 import com.embabel.common.ai.prompt.PromptContributor
 

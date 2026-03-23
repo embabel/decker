@@ -22,12 +22,14 @@ import com.embabel.agent.api.common.create
 import com.embabel.agent.api.dsl.parallelMap
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.domain.io.FileArtifact
+import com.embabel.agent.api.common.Actor
 import com.embabel.agent.domain.library.ResearchReport
 import com.embabel.agent.domain.library.ResearchTopics
-import com.embabel.agent.prompt.persona.Actor
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
-import com.embabel.agent.rag.HyDE
+import com.embabel.agent.rag.service.HyDE
+import com.embabel.agent.rag.service.RagService
 import com.embabel.agent.rag.tools.RagOptions
+import com.embabel.agent.rag.tools.RagServiceReference
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byRole
 import com.embabel.common.core.types.SimilarityCutoff
@@ -53,11 +55,10 @@ data class DeckerConfig(
     val concurrencyLevel: Int = 10,
 ) : SimilarityCutoff {
 
-    fun ragOptions(): RagOptions {
-        return RagOptions()
+    fun ragOptions(ragService: RagService): RagOptions {
+        return RagOptions(ragService = ragService)
             .withSimilarityThreshold(similarityThreshold)
             .withTopK(topK)
-            .withHyDE(HyDE(40))
     }
 }
 
@@ -70,6 +71,7 @@ class Decker(
     private val slideFormatter: SlideFormatter,
     private val filePersister: FilePersister,
     private val config: DeckerConfig,
+    private val ragService: RagService,
 ) {
 
     private val logger = LoggerFactory.getLogger(Decker::class.java)
@@ -84,8 +86,7 @@ class Decker(
         ai: Ai
     ): ResearchTopics =
         config.planner.promptRunner(ai)
-            // TODO this should be changed to RAG as a reference
-            .withRag(config.ragOptions())
+            .withReference(RagServiceReference("docs", "Reference documents", config.ragOptions(ragService), ai.withAutoLlm()))
             .withReferences(presentationRequest.llmReferences)
             .create(
                 """
@@ -107,8 +108,7 @@ class Decker(
             concurrencyLevel = config.concurrencyLevel
         ) {
             config.researcher.promptRunner(context)
-                // TODO this should be changed to RAG as a reference
-                .withRag(config.ragOptions())
+                .withReference(RagServiceReference("docs", "Reference documents", config.ragOptions(ragService), context.ai().withAutoLlm()))
                 .withReferences(presentationRequest.llmReferences)
                 .withPromptContributor(presentationRequest)
                 .create<ResearchReport>(
@@ -140,8 +140,7 @@ class Decker(
         val slideDeck = config.creator.promptRunner(context)
             .withPromptContributor(presentationRequest)
             .withReferences(presentationRequest.llmReferences)
-            // TODO this should be changed to RAG as a reference
-            .withRag(config.ragOptions())
+            .withReference(RagServiceReference("docs", "Reference documents", config.ragOptions(ragService), context.ai().withAutoLlm()))
             .withTemplate("create_deck")
             .createObject(
                 SlideDeck::class.java,

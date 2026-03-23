@@ -1,6 +1,6 @@
 package com.embabel.decker
 
-import com.embabel.agent.api.common.LlmReference
+import com.embabel.agent.api.reference.LlmReference
 import com.embabel.coding.tools.api.ApiReference
 import com.embabel.coding.tools.git.RepositoryReferenceProvider
 import com.embabel.coding.tools.jvm.ClassGraphApiReferenceExtractor
